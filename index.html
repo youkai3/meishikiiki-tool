@@ -53,12 +53,6 @@ body {
   letter-spacing: 0.02em;
 }
 
-.header p {
-  margin: 7px 0 0;
-  color: var(--sub);
-  font-size: 13px;
-}
-
 .card {
   background: var(--card);
   border-radius: 18px;
@@ -155,7 +149,7 @@ body {
 }
 
 .unit {
-  width: 28px;
+  width: 30px;
   font-size: 16px;
   font-weight: 700;
 }
@@ -230,6 +224,36 @@ body {
   font-size: 12px;
 }
 
+.adjustment-result {
+  margin-bottom: 16px;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 13px;
+  background: #fafafa;
+}
+
+.adjustment-title {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.adjustment-values {
+  display: grid;
+  gap: 8px;
+}
+
+.adjustment-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+}
+
+.adjustment-value strong {
+  font-size: 21px;
+}
+
 .result-grid {
   display: grid;
   gap: 10px;
@@ -299,11 +323,8 @@ body {
 
   <div class="header">
     <h1>明視域計算ツール</h1>
-    <p>眼鏡店スタッフ向け</p>
   </div>
 
-
-  <!-- 入力 -->
 
   <div class="card">
 
@@ -328,14 +349,12 @@ body {
             type="button"
             class="sign-button selected"
             id="fullMinus"
-            aria-label="完全矯正値 マイナス"
           >−</button>
 
           <button
             type="button"
             class="sign-button"
             id="fullPlus"
-            aria-label="完全矯正値 プラス"
           >＋</button>
 
         </div>
@@ -346,7 +365,6 @@ body {
           inputmode="decimal"
           autocomplete="off"
           placeholder="例：500"
-          aria-label="完全矯正値"
         >
 
         <span class="unit">D</span>
@@ -357,10 +375,7 @@ body {
         0.25D刻み　例：500 → 5.00D
       </div>
 
-      <div
-        id="fullError"
-        class="error"
-      ></div>
+      <div id="fullError" class="error"></div>
 
     </div>
 
@@ -381,14 +396,12 @@ body {
             type="button"
             class="sign-button selected"
             id="wearMinus"
-            aria-label="装用値 マイナス"
           >−</button>
 
           <button
             type="button"
             class="sign-button"
             id="wearPlus"
-            aria-label="装用値 プラス"
           >＋</button>
 
         </div>
@@ -399,7 +412,6 @@ body {
           inputmode="decimal"
           autocomplete="off"
           placeholder="例：450"
-          aria-label="装用値"
         >
 
         <span class="unit">D</span>
@@ -410,10 +422,7 @@ body {
         0.25D刻み　例：450 → 4.50D
       </div>
 
-      <div
-        id="wearError"
-        class="error"
-      ></div>
+      <div id="wearError" class="error"></div>
 
     </div>
 
@@ -423,12 +432,12 @@ body {
     </div>
 
 
-    <!-- ぼやけた距離 -->
+    <!-- 装用値でぼやけた距離 -->
 
     <div class="field">
 
       <div class="field-label">
-        <strong>ぼやけた距離</strong>
+        <strong>装用値でぼやけた距離</strong>
         <span class="optional">任意</span>
       </div>
 
@@ -437,10 +446,9 @@ body {
         <input
           id="blur"
           type="text"
-          inputmode="numeric"
+          inputmode="decimal"
           autocomplete="off"
           placeholder="例：30"
-          aria-label="ぼやけた距離"
         >
 
         <span class="unit">cm</span>
@@ -448,23 +456,52 @@ body {
       </div>
 
       <div class="helper">
-        入力すると調節力を算出します。未入力なら遠点のみ表示します。
+        入力すると調節力を自動計算します。
       </div>
 
-      <div
-        id="blurError"
-        class="error"
-      ></div>
+      <div id="blurError" class="error"></div>
 
     </div>
 
 
-    <!-- 加入度数 -->
+    <!-- 調節力 -->
 
     <div class="field">
 
       <div class="field-label">
-        <strong>加入度数</strong>
+        <strong>調節力</strong>
+        <span class="optional">任意</span>
+      </div>
+
+      <div class="input-row">
+
+        <input
+          id="accommodation"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="例：200"
+        >
+
+        <span class="unit">D</span>
+
+      </div>
+
+      <div class="helper">
+        入力すると装用値でぼやけた距離を自動計算します。
+      </div>
+
+      <div id="accommodationError" class="error"></div>
+
+    </div>
+
+
+    <!-- 装用値加入度数 -->
+
+    <div class="field">
+
+      <div class="field-label">
+        <strong>装用値加入度数</strong>
         <span class="optional">任意</span>
       </div>
 
@@ -478,7 +515,6 @@ body {
           inputmode="decimal"
           autocomplete="off"
           placeholder="例：200"
-          aria-label="加入度数"
         >
 
         <span class="unit">D</span>
@@ -489,15 +525,10 @@ body {
         加入度数あり：遠用・中用・近用を表示します。
       </div>
 
-      <div
-        id="addError"
-        class="error"
-      ></div>
+      <div id="addError" class="error"></div>
 
     </div>
 
-
-    <!-- ボタン -->
 
     <div class="button-row">
 
@@ -522,8 +553,6 @@ body {
   </div>
 
 
-  <!-- 結果 -->
-
   <div
     id="result"
     class="card result-card"
@@ -547,16 +576,15 @@ const wearInput =
 const blurInput =
   document.getElementById("blur");
 
+const accommodationInput =
+  document.getElementById("accommodation");
+
 const addInput =
   document.getElementById("add");
 
 const resultBox =
   document.getElementById("result");
 
-
-/* =====================================
-   符号
-===================================== */
 
 let fullSign = "-";
 let wearSign = "-";
@@ -583,22 +611,16 @@ function toHalfWidth(value) {
 
 
 /* =====================================
-   度数入力の整形
+   度数入力整形
 ===================================== */
 
 function normalizeDegreeInput(input) {
 
   let value =
-    input.value.trim();
+    toHalfWidth(input.value.trim());
 
   value =
-    toHalfWidth(value);
-
-  value =
-    value.replace(
-      /[^0-9.]/g,
-      ""
-    );
+    value.replace(/[^0-9.]/g, "");
 
   const parts =
     value.split(".");
@@ -624,17 +646,8 @@ function normalizeDegreeInput(input) {
     Number(value);
 
   if (!Number.isFinite(number)) {
-
     return;
-
   }
-
-  /*
-    500 → 5.00
-    450 → 4.50
-    425 → 4.25
-    200 → 2.00
-  */
 
   if (
     Number.isInteger(number) &&
@@ -648,12 +661,6 @@ function normalizeDegreeInput(input) {
 
   }
 
-  /*
-    5 → 5.00
-    4.5 → 4.50
-    4.25 → 4.25
-  */
-
   input.value =
     number.toFixed(2);
 
@@ -661,22 +668,18 @@ function normalizeDegreeInput(input) {
 
 
 /* =====================================
-   距離入力の整形
+   距離入力整形
 ===================================== */
 
-function normalizeBlurInput() {
+function normalizeDistanceInput() {
 
   let value =
-    blurInput.value.trim();
-
-  value =
-    toHalfWidth(value);
-
-  value =
-    value.replace(
-      /[^0-9]/g,
-      ""
+    toHalfWidth(
+      blurInput.value.trim()
     );
+
+  value =
+    value.replace(/[^0-9]/g, "");
 
   blurInput.value =
     value;
@@ -685,35 +688,68 @@ function normalizeBlurInput() {
 
 
 /* =====================================
-   入力欄から離れた時
+   調節力入力整形
 ===================================== */
 
-[
-  fullInput,
-  wearInput,
-  addInput
-].forEach(function(input) {
+function normalizeAccommodationInput() {
 
-  input.addEventListener(
-    "blur",
-    function() {
+  let value =
+    toHalfWidth(
+      accommodationInput.value.trim()
+    );
 
-      normalizeDegreeInput(this);
+  value =
+    value.replace(/[^0-9.]/g, "");
 
-    }
-  );
+  const parts =
+    value.split(".");
 
-});
+  if (parts.length > 2) {
 
-
-blurInput.addEventListener(
-  "blur",
-  function() {
-
-    normalizeBlurInput();
+    value =
+      parts[0] +
+      "." +
+      parts.slice(1).join("");
 
   }
-);
+
+  if (value === "") {
+
+    accommodationInput.value = "";
+
+    return;
+
+  }
+
+  const number =
+    Number(value);
+
+  if (!Number.isFinite(number)) {
+    return;
+  }
+
+  /*
+    200 → 2.00D
+    150 → 1.50D
+    2 → 2.00D
+  */
+
+  if (
+    Number.isInteger(number) &&
+    number >= 25
+  ) {
+
+    accommodationInput.value =
+      (number / 100).toFixed(2);
+
+    return;
+
+  }
+
+  accommodationInput.value =
+    number.toFixed(2);
+
+}
 
 
 /* =====================================
@@ -798,95 +834,221 @@ function error(id, message) {
 
 
 /* =====================================
-   度数チェック
+   遠点屈折力
 ===================================== */
 
-function validateDegree(
-  input,
-  errorId,
-  label
-) {
+function getFarPointPower() {
 
-  const raw =
-    input.value.trim();
+  const full =
+    Number(fullInput.value);
 
+  const wear =
+    Number(wearInput.value);
 
-  if (raw === "") {
+  const fullPower =
+    fullSign === "-"
+      ? -full
+      : full;
 
-    error(
-      errorId,
-      label + "を入力してください。"
-    );
+  const wearPower =
+    wearSign === "-"
+      ? -wear
+      : wear;
 
-    return false;
-
-  }
-
-
-  const value =
-    Number(raw);
-
-
-  if (!Number.isFinite(value)) {
-
-    error(
-      errorId,
-      "正しい度数を入力してください。"
-    );
-
-    return false;
-
-  }
-
-
-  /*
-    0.25D刻み
-  */
-
-  const remainder =
-    Math.round(value * 100) % 25;
-
-
-  if (remainder !== 0) {
-
-    error(
-      errorId,
-      "0.25D刻みで入力してください。"
-    );
-
-    return false;
-
-  }
-
-
-  /*
-    0.00〜20.00D
-  */
-
-  if (
-    value < 0 ||
-    value > 20
-  ) {
-
-    error(
-      errorId,
-      "0.00〜20.00Dの範囲で入力してください。"
-    );
-
-    return false;
-
-  }
-
-
-  error(
-    errorId,
-    ""
-  );
-
-
-  return true;
+  return -fullPower + wearPower;
 
 }
+
+
+/* =====================================
+   ぼやけた距離 → 調節力
+===================================== */
+
+function updateAccommodationFromDistance() {
+
+  normalizeDistanceInput();
+
+  if (
+    blurInput.value.trim() === ""
+  ) {
+    return;
+  }
+
+  if (
+    fullInput.value.trim() === "" ||
+    wearInput.value.trim() === ""
+  ) {
+    return;
+  }
+
+  const distanceValue =
+    Number(blurInput.value);
+
+  if (
+    !Number.isFinite(distanceValue) ||
+    distanceValue <= 0
+  ) {
+    return;
+  }
+
+  const farPointPower =
+    getFarPointPower();
+
+  const nearPointPower =
+    100 / distanceValue;
+
+  const accommodation =
+    nearPointPower - farPointPower;
+
+  accommodationInput.value =
+    accommodation.toFixed(2);
+
+}
+
+
+/* =====================================
+   調節力 → ぼやけた距離
+===================================== */
+
+function updateDistanceFromAccommodation() {
+
+  normalizeAccommodationInput();
+
+  if (
+    accommodationInput.value.trim() === ""
+  ) {
+    return;
+  }
+
+  if (
+    fullInput.value.trim() === "" ||
+    wearInput.value.trim() === ""
+  ) {
+    return;
+  }
+
+  const accommodation =
+    Number(accommodationInput.value);
+
+  if (
+    !Number.isFinite(accommodation)
+  ) {
+    return;
+  }
+
+  const farPointPower =
+    getFarPointPower();
+
+  const nearPointPower =
+    farPointPower +
+    accommodation;
+
+
+  if (
+    nearPointPower <= 0
+  ) {
+
+    blurInput.value =
+      "無限遠方";
+
+    return;
+
+  }
+
+
+  const distance =
+    100 / nearPointPower;
+
+  blurInput.value =
+    Math.round(distance);
+
+}
+
+
+/* =====================================
+   フォーカスを離れた時に自動計算
+===================================== */
+
+blurInput.addEventListener(
+  "blur",
+  function() {
+
+    updateAccommodationFromDistance();
+
+  }
+);
+
+
+accommodationInput.addEventListener(
+  "blur",
+  function() {
+
+    updateDistanceFromAccommodation();
+
+  }
+);
+
+
+/* =====================================
+   完全矯正値・装用値変更時
+===================================== */
+
+[
+  fullInput,
+  wearInput
+].forEach(function(input) {
+
+  input.addEventListener(
+    "blur",
+    function() {
+
+      normalizeDegreeInput(this);
+
+      /*
+        すでに距離が入力されている場合は
+        距離を基準に調節力を再計算
+      */
+
+      if (
+        blurInput.value.trim() !== "" &&
+        blurInput.value !== "無限遠方"
+      ) {
+
+        updateAccommodationFromDistance();
+
+      }
+      else if (
+        accommodationInput.value.trim() !== ""
+      ) {
+
+        updateDistanceFromAccommodation();
+
+      }
+
+    }
+  );
+
+});
+
+
+/* =====================================
+   加入度数など
+===================================== */
+
+[
+  addInput
+].forEach(function(input) {
+
+  input.addEventListener(
+    "blur",
+    function() {
+
+      normalizeDegreeInput(this);
+
+    }
+  );
+
+});
 
 
 /* =====================================
@@ -895,17 +1057,11 @@ function validateDegree(
 
 function distance(power) {
 
-  /*
-    目の要素が0以下
-    → 無限遠方
-  */
-
   if (power <= 0) {
 
     return Infinity;
 
   }
-
 
   return 100 / power;
 
@@ -924,7 +1080,6 @@ function displayDistance(value) {
 
   }
 
-
   return (
     Math.round(value) +
     '<span class="unit-text">cm</span>'
@@ -934,7 +1089,7 @@ function displayDistance(value) {
 
 
 /* =====================================
-   結果カード
+   結果行
 ===================================== */
 
 function resultRow(
@@ -946,7 +1101,6 @@ function resultRow(
   let text =
     displayDistance(far);
 
-
   if (near !== null) {
 
     text +=
@@ -954,7 +1108,6 @@ function resultRow(
       displayDistance(near);
 
   }
-
 
   return `
     <div class="result-item">
@@ -987,28 +1140,28 @@ document
 
 function calculate() {
 
-  /*
-    全角 → 半角
-  */
-
   normalizeDegreeInput(fullInput);
 
   normalizeDegreeInput(wearInput);
 
+  if (
+    blurInput.value !== "無限遠方"
+  ) {
+    normalizeDistanceInput();
+  }
+
+  normalizeAccommodationInput();
+
   normalizeDegreeInput(addInput);
 
-  normalizeBlurInput();
-
-
-  /*
-    エラーを消す
-  */
 
   error("fullError", "");
 
   error("wearError", "");
 
   error("blurError", "");
+
+  error("accommodationError", "");
 
   error("addError", "");
 
@@ -1018,128 +1171,57 @@ function calculate() {
 
 
   /*
-    完全矯正値
+    必須入力
   */
-
-  const fullValid =
-    validateDegree(
-      fullInput,
-      "fullError",
-      "完全矯正値"
-    );
-
-
-  /*
-    装用値
-  */
-
-  const wearValid =
-    validateDegree(
-      wearInput,
-      "wearError",
-      "装用値"
-    );
-
 
   if (
-    !fullValid ||
-    !wearValid
+    fullInput.value.trim() === ""
   ) {
+
+    error(
+      "fullError",
+      "完全矯正値を入力してください。"
+    );
 
     return;
 
   }
 
 
-  /*
-    ぼやけた距離
-  */
-
-  let blurDistanceValue =
-    null;
-
-
   if (
-    blurInput.value.trim() !== ""
+    wearInput.value.trim() === ""
   ) {
 
-    const value =
-      Number(
-        blurInput.value
-      );
+    error(
+      "wearError",
+      "装用値を入力してください。"
+    );
 
-
-    if (
-      !Number.isInteger(value) ||
-      value < 10 ||
-      value > 100
-    ) {
-
-      error(
-        "blurError",
-        "10〜100cmの整数で入力してください。"
-      );
-
-      return;
-
-    }
-
-
-    blurDistanceValue =
-      value;
+    return;
 
   }
 
-
-  /*
-    加入度数
-  */
-
-  let addition =
-    null;
-
-
-  if (
-    addInput.value.trim() !== ""
-  ) {
-
-    const addValid =
-      validateDegree(
-        addInput,
-        "addError",
-        "加入度数"
-      );
-
-
-    if (!addValid) {
-
-      return;
-
-    }
-
-
-    addition =
-      Number(
-        addInput.value
-      );
-
-  }
-
-
-  /*
-    D値
-  */
 
   const full =
-    Number(
-      fullInput.value
-    );
-
+    Number(fullInput.value);
 
   const wear =
-    Number(
-      wearInput.value
+    Number(wearInput.value);
+
+
+  if (
+    !Number.isFinite(full) ||
+    !Number.isFinite(wear)
+  ) {
+
+    error(
+      "fullError",
+      "正しい度数を入力してください。"
     );
+
+    return;
+
+  }
 
 
   const fullPower =
@@ -1147,18 +1229,11 @@ function calculate() {
       ? -full
       : full;
 
-
   const wearPower =
     wearSign === "-"
       ? -wear
       : wear;
 
-
-  /*
-    遠点屈折力
-
-    ＝ −完全矯正値 ＋ 装用値
-  */
 
   const farPointPower =
     -fullPower +
@@ -1166,30 +1241,109 @@ function calculate() {
 
 
   /*
-    調節力
-
-    ＝ 近点屈折力 − 遠点屈折力
-
-    近点屈折力
-    ＝ 100 ÷ ぼやけた距離(cm)
+    調節力・ぼやけた距離
   */
 
   let accommodation =
     null;
 
+  let blurDistanceValue =
+    null;
+
+
+  /*
+    ぼやけた距離が入力されている場合
+  */
 
   if (
-    blurDistanceValue !== null
+    blurInput.value.trim() !== "" &&
+    blurInput.value !== "無限遠方"
   ) {
 
-    const nearPointPower =
-      100 /
-      blurDistanceValue;
+    blurDistanceValue =
+      Number(blurInput.value);
 
+    if (
+      !Number.isFinite(blurDistanceValue) ||
+      blurDistanceValue <= 0
+    ) {
+
+      error(
+        "blurError",
+        "正しい距離を入力してください。"
+      );
+
+      return;
+
+    }
+
+
+    const nearPointPower =
+      100 / blurDistanceValue;
 
     accommodation =
       nearPointPower -
       farPointPower;
+
+
+    accommodationInput.value =
+      accommodation.toFixed(2);
+
+  }
+
+  /*
+    ぼやけた距離がなく、
+    調節力が入力されている場合
+  */
+
+  else if (
+    accommodationInput.value.trim() !== ""
+  ) {
+
+    accommodation =
+      Number(
+        accommodationInput.value
+      );
+
+    if (
+      !Number.isFinite(accommodation)
+    ) {
+
+      error(
+        "accommodationError",
+        "正しい調節力を入力してください。"
+      );
+
+      return;
+
+    }
+
+
+    const nearPointPower =
+      farPointPower +
+      accommodation;
+
+
+    if (
+      nearPointPower <= 0
+    ) {
+
+      blurDistanceValue =
+        Infinity;
+
+      blurInput.value =
+        "無限遠方";
+
+    }
+    else {
+
+      blurDistanceValue =
+        100 / nearPointPower;
+
+      blurInput.value =
+        Math.round(blurDistanceValue);
+
+    }
 
   }
 
@@ -1222,7 +1376,38 @@ function calculate() {
 
 
   /*
-    結果
+    加入度数
+  */
+
+  let addition =
+    null;
+
+
+  if (
+    addInput.value.trim() !== ""
+  ) {
+
+    addition =
+      Number(addInput.value);
+
+    if (
+      !Number.isFinite(addition)
+    ) {
+
+      error(
+        "addError",
+        "正しい加入度数を入力してください。"
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  /*
+    結果表示
   */
 
   let html = `
@@ -1231,14 +1416,73 @@ function calculate() {
       計算結果
     </div>
 
+  `;
+
+
+  /*
+    調節力・ぼやけた距離
+  */
+
+  if (
+    accommodation !== null ||
+    blurDistanceValue !== null
+  ) {
+
+    html += `
+
+      <div class="adjustment-result">
+
+        <div class="adjustment-title">
+          調節・ぼやけた距離
+        </div>
+
+        <div class="adjustment-values">
+
+          <div class="adjustment-value">
+            <span>調節力</span>
+            <strong>
+              ${accommodation !== null
+                ? accommodation.toFixed(2) + "D"
+                : "—"}
+            </strong>
+          </div>
+
+          <div class="adjustment-value">
+            <span>装用値でぼやけた距離</span>
+            <strong>
+              ${
+                blurDistanceValue === Infinity
+                  ? "無限遠方"
+                  : blurDistanceValue !== null
+                    ? Math.round(blurDistanceValue) + "cm"
+                    : "—"
+              }
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  html += `
+
     <div class="result-note">
-      遠い距離 → 近い距離
+      明視域：遠い距離 → 近い距離
     </div>
 
     <div class="result-grid">
 
   `;
 
+
+  /*
+    遠用
+  */
 
   html +=
     resultRow(
@@ -1256,26 +1500,22 @@ function calculate() {
     addition !== null
   ) {
 
-
     /*
       中用
-      ＝ 遠用部 ＋ 加入度数の1/4
+      加入度数の1/4
     */
 
     const intermediatePower =
       farPointPower +
       addition / 4;
 
-
     const intermediateFar =
       distance(
         intermediatePower
       );
 
-
     let intermediateNear =
       null;
-
 
     if (
       accommodation !== null
@@ -1300,23 +1540,19 @@ function calculate() {
 
     /*
       近用
-      ＝ 遠用部 ＋ 加入度数
     */
 
     const nearPower =
       farPointPower +
       addition;
 
-
     const nearFar =
       distance(
         nearPower
       );
 
-
     let nearNear =
       null;
-
 
     if (
       accommodation !== null
@@ -1346,21 +1582,12 @@ function calculate() {
   `;
 
 
-  /*
-    表示
-  */
-
   resultBox.innerHTML =
     html;
-
 
   resultBox.style.display =
     "block";
 
-
-  /*
-    結果までスクロール
-  */
 
   setTimeout(function() {
 
@@ -1394,6 +1621,8 @@ function reset() {
 
   blurInput.value = "";
 
+  accommodationInput.value = "";
+
   addInput.value = "";
 
 
@@ -1426,14 +1655,14 @@ function reset() {
 
   error("blurError", "");
 
+  error("accommodationError", "");
+
   error("addError", "");
 
 
-  resultBox.innerHTML =
-    "";
+  resultBox.innerHTML = "";
 
-  resultBox.style.display =
-    "none";
+  resultBox.style.display = "none";
 
 
   window.scrollTo({
