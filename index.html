@@ -3,902 +3,1749 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#2563eb">
-<meta name="theme-color" content="#2563eb">
 <title>明視域計算ツール</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1e3a8a;
+  --blue-light: #eff6ff;
+  --bg: #f3f6fa;
+  --card: #ffffff;
+  --text: #1f2937;
+  --sub: #6b7280;
+  --border: #d1d5db;
+  --error: #dc2626;
+}
 
-    body {
-        margin: 0;
-        font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            "Hiragino Kaku Gothic ProN",
-            "Yu Gothic",
-            Meiryo,
-            sans-serif;
-        background: #f3f6fa;
-        color: #1f2937;
-        line-height: 1.6;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .container {
-        width: min(720px, 94%);
-        margin: 0 auto;
-        padding: 24px 0 40px;
-    }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic",
+    Meiryo,
+    sans-serif;
+}
 
-    h1 {
-        margin: 0 0 22px;
-        text-align: center;
-        font-size: 28px;
-        font-weight: 700;
-        color: #111827;
-    }
+.app {
+  width: min(720px, 94%);
+  margin: 0 auto;
+  padding: 22px 0 40px;
+}
 
-    .card {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 22px;
-        margin-bottom: 18px;
-        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.06);
-    }
+.header h1 {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 26px;
+}
 
-    .section-title {
-        margin: 0 0 18px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #2563eb;
-        font-size: 20px;
-        font-weight: 700;
-        color: #1e3a8a;
-    }
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+}
 
-    .sub-title {
-        margin: 22px 0 12px;
-        font-size: 17px;
-        font-weight: 700;
-        color: #374151;
-    }
+.section-title {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--blue);
+  color: var(--blue-dark);
+  font-size: 20px;
+  font-weight: 800;
+}
 
-    .input-group {
-        margin-bottom: 17px;
-    }
+.field {
+  margin-bottom: 22px;
+}
 
-    .input-label {
-        display: block;
-        margin-bottom: 7px;
-        font-weight: 600;
-        font-size: 15px;
-    }
+.field-label {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
 
-    .input-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    input[type="number"] {
-        width: 100%;
-        min-height: 48px;
-        padding: 8px 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 9px;
-        font-size: 17px;
-        background: #fff;
-    }
+.sign-buttons {
+  display: flex;
+  gap: 7px;
+}
 
-    input[type="number"]:focus {
-        outline: none;
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-    }
+.sign-button {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--blue);
+  font-size: 23px;
+  font-weight: 800;
+}
 
-    .unit {
-        flex: 0 0 auto;
-        font-size: 15px;
-        color: #4b5563;
-    }
+.sign-button.selected {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
 
-    .sign-buttons {
-        display: flex;
-        gap: 7px;
-        flex: 0 0 auto;
-    }
+input {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  font-size: 18px;
+}
 
-    .sign-button {
-        width: 48px;
-        height: 48px;
-        border: 1px solid #cbd5e1;
-        border-radius: 9px;
-        background: #fff;
-        font-size: 20px;
-        font-weight: 700;
-        cursor: pointer;
-    }
+input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
 
-    .sign-button.active {
-        background: #2563eb;
-        color: #fff;
-        border-color: #2563eb;
-    }
+input:disabled {
+  background: #f8fafc;
+  color: #64748b;
+}
 
-    .help-text {
-        margin-top: 5px;
-        font-size: 13px;
-        color: #6b7280;
-    }
+.unit {
+  min-width: 30px;
+  color: #4b5563;
+  font-size: 16px;
+}
 
-    .choice-box {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 18px;
-    }
+.fixed-plus {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 23px;
+  font-weight: 800;
+}
 
-    .choice-button {
-        min-height: 54px;
-        padding: 10px;
-        border: 2px solid #d1d5db;
-        border-radius: 10px;
-        background: #fff;
-        color: #374151;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-    }
+.helper {
+  margin-top: 6px;
+  color: var(--sub);
+  font-size: 12px;
+}
 
-    .choice-button.active {
-        border-color: #2563eb;
-        background: #eff6ff;
-        color: #1d4ed8;
-    }
+.error {
+  margin-top: 6px;
+  color: var(--error);
+  font-size: 12px;
+}
 
-    .input-disabled {
-        opacity: 0.45;
-        pointer-events: none;
-    }
+.mode-title {
+  margin: 4px 0 10px;
+  font-size: 16px;
+  font-weight: 800;
+}
 
-    .result-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 16px;
-        margin-top: 12px;
-    }
+.mode-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-bottom: 22px;
+}
 
-    .result-title {
-        font-size: 14px;
-        color: #64748b;
-        margin-bottom: 3px;
-    }
+.mode-button {
+  min-height: 52px;
+  padding: 9px;
+  border: 2px solid var(--border);
+  border-radius: 11px;
+  background: #fff;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 800;
+}
 
-    .result-value {
-        font-size: 26px;
-        font-weight: 700;
-        color: #111827;
-    }
+.mode-button.selected {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+}
 
-    .result-value small {
-        font-size: 16px;
-        font-weight: 500;
-        margin-left: 3px;
-    }
+.badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
 
-    .result-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
+.badge-input {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
 
-    .range-card {
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        padding: 15px;
-    }
+.badge-auto {
+  background: #ecfeff;
+  color: #0891b2;
+}
 
-    .range-name {
-        font-size: 16px;
-        font-weight: 700;
-        margin-bottom: 7px;
-        color: #1f2937;
-    }
+.disabled-field {
+  opacity: 0.5;
+}
 
-    .range-value {
-        font-size: 20px;
-        font-weight: 700;
-        color: #2563eb;
-    }
+.button-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+  margin-top: 26px;
+}
 
-    .error {
-        margin-top: 10px;
-        color: #dc2626;
-        font-size: 14px;
-        font-weight: 600;
-    }
+.action-button {
+  min-height: 52px;
+  border-radius: 11px;
+  font-size: 16px;
+  font-weight: 800;
+}
 
-    .hidden {
-        display: none !important;
-    }
+.calculate {
+  border: none;
+  background: var(--blue);
+  color: #fff;
+}
 
-    .auto-badge {
-        display: inline-block;
-        margin-left: 6px;
-        padding: 2px 7px;
-        border-radius: 20px;
-        background: #e0f2fe;
-        color: #0369a1;
-        font-size: 11px;
-        font-weight: 700;
-        vertical-align: middle;
-    }
+.reset {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #374151;
+}
 
-    .input-badge {
-        display: inline-block;
-        margin-left: 6px;
-        padding: 2px 7px;
-        border-radius: 20px;
-        background: #dbeafe;
-        color: #1d4ed8;
-        font-size: 11px;
-        font-weight: 700;
-        vertical-align: middle;
-    }
+.result-card {
+  display: none;
+}
 
-    @media (max-width: 560px) {
-        .container {
-            width: 94%;
-            padding-top: 18px;
-        }
+.result-title {
+  margin-bottom: 14px;
+  font-size: 19px;
+  font-weight: 800;
+}
 
-        .card {
-            padding: 18px;
-        }
+.result-note {
+  margin-bottom: 14px;
+  color: var(--sub);
+  font-size: 12px;
+}
 
-        h1 {
-            font-size: 24px;
-        }
+.adjustment-result {
+  margin-bottom: 16px;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 13px;
+  background: #fafafa;
+}
 
-        .result-grid {
-            grid-template-columns: 1fr;
-        }
+.adjustment-title {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 800;
+}
 
-        .choice-box {
-            grid-template-columns: 1fr;
-        }
-    }
+.adjustment-values {
+  display: grid;
+  gap: 8px;
+}
+
+.adjustment-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.adjustment-value strong {
+  text-align: right;
+  font-size: 20px;
+}
+
+.result-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.result-item {
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 13px;
+  background: #fafafa;
+}
+
+.result-item-name {
+  margin-bottom: 5px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.result-range {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.unit-text {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.infinity {
+  font-size: 21px;
+}
+
+@media (max-width: 520px) {
+  .app {
+    width: 94%;
+    padding-top: 16px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .header h1 {
+    font-size: 23px;
+  }
+
+  .mode-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .sign-button,
+  .fixed-plus {
+    width: 46px;
+  }
+
+  .result-range {
+    font-size: 21px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
+  <div class="header">
     <h1>明視域計算ツール</h1>
+  </div>
 
-    <!-- 基本 -->
-    <div class="card">
-        <h2 class="section-title">基本</h2>
+  <!-- 基本 -->
+  <div class="card">
 
-        <div class="input-group">
-            <label class="input-label" for="fullCorrection">
-                完全矯正値
-            </label>
+    <div class="section-title">
+      基本
+    </div>
 
-            <div class="input-row">
-                <div class="sign-buttons">
-                    <button type="button" class="sign-button active" id="fullMinus">−</button>
-                    <button type="button" class="sign-button" id="fullPlus">＋</button>
-                </div>
+    <!-- 完全矯正値 -->
+    <div class="field">
 
-                <input
-                    type="number"
-                    id="fullCorrection"
-                    min="0"
-                    step="0.25"
-                    placeholder="例：5.00"
-                >
+      <div class="field-label">
+        <strong>完全矯正値</strong>
+      </div>
 
-                <span class="unit">D</span>
-            </div>
+      <div class="input-row">
+
+        <div class="sign-buttons">
+          <button
+            type="button"
+            class="sign-button selected"
+            id="fullMinus"
+          >−</button>
+
+          <button
+            type="button"
+            class="sign-button"
+            id="fullPlus"
+          >＋</button>
         </div>
 
-        <div class="input-group">
-            <label class="input-label" for="wearingValue">
-                装用値
-            </label>
+        <input
+          id="full"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="例：500"
+        >
 
-            <div class="input-row">
-                <div class="sign-buttons">
-                    <button type="button" class="sign-button active" id="wearMinus">−</button>
-                    <button type="button" class="sign-button" id="wearPlus">＋</button>
-                </div>
+        <span class="unit">D</span>
 
-                <input
-                    type="number"
-                    id="wearingValue"
-                    min="0"
-                    step="0.25"
-                    placeholder="例：4.50"
-                >
+      </div>
 
-                <span class="unit">D</span>
-            </div>
-        </div>
+      <div class="helper">
+        0.25D刻み　例：500 → 5.00D
+      </div>
 
-        <div class="input-group">
-            <label class="input-label">
-                どちらから計算しますか？
-            </label>
+      <div id="fullError" class="error"></div>
 
-            <div class="choice-box">
-                <button
-                    type="button"
-                    class="choice-button active"
-                    id="chooseAccommodation"
-                >
-                    調節力から計算
-                </button>
-
-                <button
-                    type="button"
-                    class="choice-button"
-                    id="chooseBlurDistance"
-                >
-                    ぼやけた距離から計算
-                </button>
-            </div>
-        </div>
-
-        <div class="input-group" id="accommodationGroup">
-            <label class="input-label" for="accommodation">
-                調節力
-                <span class="input-badge">入力</span>
-            </label>
-
-            <div class="input-row">
-                <input
-                    type="number"
-                    id="accommodation"
-                    min="0"
-                    step="0.25"
-                    placeholder="例：2.50"
-                >
-                <span class="unit">D</span>
-            </div>
-        </div>
-
-        <div class="input-group input-disabled" id="blurDistanceGroup">
-            <label class="input-label" for="blurDistance">
-                装用値でぼやけた距離
-                <span class="auto-badge">自動計算</span>
-            </label>
-
-            <div class="input-row">
-                <input
-                    type="number"
-                    id="blurDistance"
-                    min="0"
-                    step="1"
-                    placeholder="例：30"
-                    disabled
-                >
-                <span class="unit">cm</span>
-            </div>
-        </div>
-
-        <div class="input-group hidden" id="blurInputGroup">
-            <label class="input-label" for="blurDistanceInput">
-                装用値でぼやけた距離
-                <span class="input-badge">入力</span>
-            </label>
-
-            <div class="input-row">
-                <input
-                    type="number"
-                    id="blurDistanceInput"
-                    min="1"
-                    step="1"
-                    placeholder="例：30"
-                >
-                <span class="unit">cm</span>
-            </div>
-        </div>
-
-        <div class="input-group hidden" id="accommodationAutoGroup">
-            <label class="input-label" for="accommodationAuto">
-                調節力
-                <span class="auto-badge">自動計算</span>
-            </label>
-
-            <div class="input-row">
-                <input
-                    type="number"
-                    id="accommodationAuto"
-                    disabled
-                >
-                <span class="unit">D</span>
-            </div>
-        </div>
-
-        <div id="basicError" class="error"></div>
     </div>
 
 
-    <!-- 調節 -->
-    <div class="card">
-        <h2 class="section-title">調節</h2>
+    <!-- 装用値 -->
+    <div class="field">
 
-        <div class="result-grid">
+      <div class="field-label">
+        <strong>装用値</strong>
+      </div>
 
-            <div class="result-card">
-                <div class="result-title">遠点</div>
-                <div class="result-value" id="farPoint">—</div>
-            </div>
+      <div class="input-row">
 
-            <div class="result-card">
-                <div class="result-title">近点</div>
-                <div class="result-value" id="nearPoint">—</div>
-            </div>
+        <div class="sign-buttons">
+          <button
+            type="button"
+            class="sign-button selected"
+            id="wearMinus"
+          >−</button>
 
+          <button
+            type="button"
+            class="sign-button"
+            id="wearPlus"
+          >＋</button>
         </div>
+
+        <input
+          id="wear"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="例：450"
+        >
+
+        <span class="unit">D</span>
+
+      </div>
+
+      <div class="helper">
+        0.25D刻み　例：450 → 4.50D
+      </div>
+
+      <div id="wearError" class="error"></div>
+
     </div>
 
 
-    <!-- 加入 -->
-    <div class="card">
-        <h2 class="section-title">加入</h2>
+    <div class="mode-title">
+      どちらから計算しますか？
+    </div>
 
-        <div class="input-group">
-            <label class="input-label" for="addition">
-                加入度数
-            </label>
+    <div class="mode-buttons">
 
-            <div class="input-row">
-                <input
-                    type="number"
-                    id="addition"
-                    min="0"
-                    step="0.25"
-                    placeholder="例：1.50"
-                >
-                <span class="unit">D</span>
-            </div>
+      <button
+        type="button"
+        class="mode-button selected"
+        id="accommodationMode"
+      >
+        調節力から計算
+      </button>
 
-            <div class="help-text">
-                ＋度数のみ入力してください
-            </div>
-        </div>
+      <button
+        type="button"
+        class="mode-button"
+        id="distanceMode"
+      >
+        ぼやけた距離から計算
+      </button>
+
     </div>
 
 
-    <!-- 明視域 -->
-    <div class="card hidden" id="rangeSection">
-        <h2 class="section-title">明視域</h2>
+    <!-- 調節力 -->
+    <div class="field" id="accommodationField">
 
-        <div class="range-card">
-            <div class="range-name">遠用</div>
-            <div class="range-value" id="distanceRange">—</div>
-        </div>
+      <div class="field-label">
+        <strong>調節力</strong>
+        <span class="badge badge-input" id="accommodationBadge">
+          入力
+        </span>
+      </div>
 
-        <div class="range-card" id="middleRangeCard">
-            <div class="range-name">中用</div>
-            <div class="range-value" id="middleRange">—</div>
-        </div>
+      <div class="input-row">
 
-        <div class="range-card" id="nearRangeCard">
-            <div class="range-name">近用</div>
-            <div class="range-value" id="nearRange">—</div>
-        </div>
+        <input
+          id="accommodation"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="例：200"
+        >
+
+        <span class="unit">D</span>
+
+      </div>
+
+      <div class="helper">
+        例：200 → 2.00D
+      </div>
+
+      <div id="accommodationError" class="error"></div>
+
     </div>
+
+
+    <!-- 装用値でぼやけた距離 -->
+    <div class="field disabled-field" id="blurField">
+
+      <div class="field-label">
+        <strong>装用値でぼやけた距離</strong>
+        <span class="badge badge-auto" id="blurBadge">
+          自動計算
+        </span>
+      </div>
+
+      <div class="input-row">
+
+        <input
+          id="blur"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="例：30"
+          disabled
+        >
+
+        <span class="unit">cm</span>
+
+      </div>
+
+      <div id="blurError" class="error"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- 調節 -->
+  <div class="card">
+
+    <div class="section-title">
+      調節
+    </div>
+
+    <div class="helper">
+      調節力または装用値でぼやけた距離を入力してください。
+    </div>
+
+  </div>
+
+
+  <!-- 加入 -->
+  <div class="card">
+
+    <div class="section-title">
+      加入
+    </div>
+
+    <div class="field">
+
+      <div class="field-label">
+        <strong>装用値加入度数</strong>
+      </div>
+
+      <div class="input-row">
+
+        <span class="fixed-plus">＋</span>
+
+        <input
+          id="add"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="例：150"
+        >
+
+        <span class="unit">D</span>
+
+      </div>
+
+      <div class="helper">
+        0.25D刻み　例：150 → 1.50D
+      </div>
+
+      <div id="addError" class="error"></div>
+
+    </div>
+
+
+    <div class="button-row">
+
+      <button
+        type="button"
+        class="action-button calculate"
+        id="calculate"
+      >
+        計算する
+      </button>
+
+      <button
+        type="button"
+        class="action-button reset"
+        id="reset"
+      >
+        リセット
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 計算結果 -->
+  <div
+    id="result"
+    class="card result-card"
+  ></div>
 
 </div>
 
 
 <script>
-    const fullCorrection = document.getElementById("fullCorrection");
-    const wearingValue = document.getElementById("wearingValue");
 
-    const accommodation = document.getElementById("accommodation");
-    const accommodationAuto = document.getElementById("accommodationAuto");
+const fullInput =
+  document.getElementById("full");
 
-    const blurDistance = document.getElementById("blurDistance");
-    const blurDistanceInput = document.getElementById("blurDistanceInput");
+const wearInput =
+  document.getElementById("wear");
 
-    const addition = document.getElementById("addition");
+const accommodationInput =
+  document.getElementById("accommodation");
 
-    const accommodationGroup =
-        document.getElementById("accommodationGroup");
+const blurInput =
+  document.getElementById("blur");
 
-    const blurDistanceGroup =
-        document.getElementById("blurDistanceGroup");
+const addInput =
+  document.getElementById("add");
 
-    const blurInputGroup =
-        document.getElementById("blurInputGroup");
-
-    const accommodationAutoGroup =
-        document.getElementById("accommodationAutoGroup");
-
-    const chooseAccommodation =
-        document.getElementById("chooseAccommodation");
-
-    const chooseBlurDistance =
-        document.getElementById("chooseBlurDistance");
-
-    const basicError =
-        document.getElementById("basicError");
-
-    const rangeSection =
-        document.getElementById("rangeSection");
-
-    const middleRangeCard =
-        document.getElementById("middleRangeCard");
-
-    const nearRangeCard =
-        document.getElementById("nearRangeCard");
+const resultBox =
+  document.getElementById("result");
 
 
-    let calculationMode = "accommodation";
+let fullSign = "-";
+let wearSign = "-";
+let calculationMode = "accommodation";
 
 
-    function setSign(minusButton, plusButton, sign) {
-        if (sign === "minus") {
-            minusButton.classList.add("active");
-            plusButton.classList.remove("active");
-        } else {
-            minusButton.classList.remove("active");
-            plusButton.classList.add("active");
-        }
-    }
+/* 全角 → 半角 */
+function toHalfWidth(value) {
+
+  return value
+    .replace(/[０-９．]/g, function(s) {
+      return String.fromCharCode(
+        s.charCodeAt(0) - 0xFEE0
+      );
+    })
+    .replace(/＋/g, "+")
+    .replace(/[−ー]/g, "-");
+}
 
 
-    function getSignedValue(input, minusButton, plusButton) {
-        const value = parseFloat(input.value);
+/* 度数整形 */
+function normalizeDegreeInput(input) {
 
-        if (isNaN(value)) {
-            return null;
-        }
+  let value =
+    toHalfWidth(input.value.trim());
 
-        return plusButton.classList.contains("active")
-            ? Math.abs(value)
-            : -Math.abs(value);
-    }
+  value =
+    value.replace(/[^0-9.]/g, "");
+
+  const parts =
+    value.split(".");
+
+  if (parts.length > 2) {
+    value =
+      parts[0] +
+      "." +
+      parts.slice(1).join("");
+  }
+
+  if (value === "") {
+    input.value = "";
+    return;
+  }
+
+  const number =
+    Number(value);
+
+  if (!Number.isFinite(number)) {
+    return;
+  }
+
+  /*
+    500 → 5.00
+    450 → 4.50
+    200 → 2.00
+    1.5 → 1.50
+  */
+  if (
+    !value.includes(".") &&
+    Number.isInteger(number) &&
+    number >= 25
+  ) {
+
+    input.value =
+      (number / 100).toFixed(2);
+
+    return;
+  }
+
+  input.value =
+    number.toFixed(2);
+}
 
 
-    const fullMinus = document.getElementById("fullMinus");
-    const fullPlus = document.getElementById("fullPlus");
+/* 距離整形 */
+function normalizeDistanceInput() {
 
-    const wearMinus = document.getElementById("wearMinus");
-    const wearPlus = document.getElementById("wearPlus");
-
-
-    fullMinus.addEventListener("click", () =>
-        setSign(fullMinus, fullPlus, "minus")
+  let value =
+    toHalfWidth(
+      blurInput.value.trim()
     );
 
-    fullPlus.addEventListener("click", () =>
-        setSign(fullMinus, fullPlus, "plus")
+  value =
+    value.replace(/[^0-9]/g, "");
+
+  blurInput.value =
+    value;
+}
+
+
+/* 符号ボタン */
+function setupSignButtons(
+  minusId,
+  plusId,
+  callback
+) {
+
+  const minus =
+    document.getElementById(minusId);
+
+  const plus =
+    document.getElementById(plusId);
+
+  minus.addEventListener(
+    "click",
+    function() {
+
+      minus.classList.add("selected");
+      plus.classList.remove("selected");
+
+      callback("-");
+    }
+  );
+
+  plus.addEventListener(
+    "click",
+    function() {
+
+      plus.classList.add("selected");
+      minus.classList.remove("selected");
+
+      callback("+");
+    }
+  );
+}
+
+
+setupSignButtons(
+  "fullMinus",
+  "fullPlus",
+  function(sign) {
+    fullSign = sign;
+  }
+);
+
+
+setupSignButtons(
+  "wearMinus",
+  "wearPlus",
+  function(sign) {
+    wearSign = sign;
+  }
+);
+
+
+/* 入力モード */
+const accommodationMode =
+  document.getElementById(
+    "accommodationMode"
+  );
+
+const distanceMode =
+  document.getElementById(
+    "distanceMode"
+  );
+
+const accommodationField =
+  document.getElementById(
+    "accommodationField"
+  );
+
+const blurField =
+  document.getElementById(
+    "blurField"
+  );
+
+const accommodationBadge =
+  document.getElementById(
+    "accommodationBadge"
+  );
+
+const blurBadge =
+  document.getElementById(
+    "blurBadge"
+  );
+
+
+function setCalculationMode(mode) {
+
+  calculationMode = mode;
+
+  if (mode === "accommodation") {
+
+    accommodationMode
+      .classList.add("selected");
+
+    distanceMode
+      .classList.remove("selected");
+
+    accommodationInput.disabled =
+      false;
+
+    blurInput.disabled =
+      true;
+
+    accommodationField
+      .classList.remove(
+        "disabled-field"
+      );
+
+    blurField
+      .classList.add(
+        "disabled-field"
+      );
+
+    accommodationBadge.textContent =
+      "入力";
+
+    accommodationBadge.className =
+      "badge badge-input";
+
+    blurBadge.textContent =
+      "自動計算";
+
+    blurBadge.className =
+      "badge badge-auto";
+
+  }
+
+  else {
+
+    distanceMode
+      .classList.add("selected");
+
+    accommodationMode
+      .classList.remove("selected");
+
+    blurInput.disabled =
+      false;
+
+    accommodationInput.disabled =
+      true;
+
+    blurField
+      .classList.remove(
+        "disabled-field"
+      );
+
+    accommodationField
+      .classList.add(
+        "disabled-field"
+      );
+
+    blurBadge.textContent =
+      "入力";
+
+    blurBadge.className =
+      "badge badge-input";
+
+    accommodationBadge.textContent =
+      "自動計算";
+
+    accommodationBadge.className =
+      "badge badge-auto";
+  }
+}
+
+
+accommodationMode.addEventListener(
+  "click",
+  function() {
+
+    setCalculationMode(
+      "accommodation"
     );
 
-    wearMinus.addEventListener("click", () =>
-        setSign(wearMinus, wearPlus, "minus")
+    if (
+      accommodationInput.value.trim() !== ""
+    ) {
+      updateDistanceFromAccommodation();
+    }
+  }
+);
+
+
+distanceMode.addEventListener(
+  "click",
+  function() {
+
+    setCalculationMode(
+      "distance"
     );
 
-    wearPlus.addEventListener("click", () =>
-        setSign(wearMinus, wearPlus, "plus")
+    if (
+      blurInput.value.trim() !== ""
+    ) {
+      updateAccommodationFromDistance();
+    }
+  }
+);
+
+
+/* エラー */
+function error(id, message) {
+
+  document
+    .getElementById(id)
+    .textContent =
+      message;
+}
+
+
+/* 遠点屈折力 */
+function getFarPointPower() {
+
+  const full =
+    Number(fullInput.value);
+
+  const wear =
+    Number(wearInput.value);
+
+  const fullPower =
+    fullSign === "-"
+      ? -full
+      : full;
+
+  const wearPower =
+    wearSign === "-"
+      ? -wear
+      : wear;
+
+  return -fullPower + wearPower;
+}
+
+
+/* 調節力 → 装用値でぼやけた距離 */
+function updateDistanceFromAccommodation() {
+
+  normalizeDegreeInput(
+    accommodationInput
+  );
+
+  if (
+    accommodationInput.value.trim()
+      === ""
+  ) {
+    blurInput.value = "";
+    return;
+  }
+
+  if (
+    fullInput.value.trim() === "" ||
+    wearInput.value.trim() === ""
+  ) {
+    return;
+  }
+
+  const accommodation =
+    Number(
+      accommodationInput.value
     );
 
+  if (
+    !Number.isFinite(
+      accommodation
+    )
+  ) {
+    return;
+  }
 
-    chooseAccommodation.addEventListener("click", () => {
-        calculationMode = "accommodation";
+  const farPointPower =
+    getFarPointPower();
 
-        chooseAccommodation.classList.add("active");
-        chooseBlurDistance.classList.remove("active");
+  const nearPointPower =
+    farPointPower +
+    accommodation;
 
-        accommodationGroup.classList.remove("hidden");
-        blurInputGroup.classList.add("hidden");
+  if (nearPointPower <= 0) {
 
-        blurDistanceGroup.classList.remove("input-disabled");
+    blurInput.value =
+      "無限遠方";
 
-        blurDistance.disabled = true;
+    return;
+  }
 
-        accommodationAutoGroup.classList.add("hidden");
+  const distance =
+    100 / nearPointPower;
 
-        calculate();
-    });
-
-
-    chooseBlurDistance.addEventListener("click", () => {
-        calculationMode = "blur";
-
-        chooseAccommodation.classList.remove("active");
-        chooseBlurDistance.classList.add("active");
-
-        accommodationGroup.classList.add("hidden");
-        blurInputGroup.classList.remove("hidden");
-
-        blurDistanceGroup.classList.add("hidden");
-
-        accommodationAutoGroup.classList.remove("hidden");
-
-        calculate();
-    });
+  blurInput.value =
+    Math.round(distance);
+}
 
 
-    [
-        fullCorrection,
-        wearingValue,
-        accommodation,
-        blurDistanceInput,
-        addition
-    ].forEach(input => {
-        input.addEventListener("input", calculate);
-    });
+/* 装用値でぼやけた距離 → 調節力 */
+function updateAccommodationFromDistance() {
+
+  normalizeDistanceInput();
+
+  if (
+    blurInput.value.trim() === ""
+  ) {
+    accommodationInput.value = "";
+    return;
+  }
+
+  if (
+    fullInput.value.trim() === "" ||
+    wearInput.value.trim() === ""
+  ) {
+    return;
+  }
+
+  const distanceValue =
+    Number(blurInput.value);
+
+  if (
+    !Number.isFinite(
+      distanceValue
+    ) ||
+    distanceValue <= 0
+  ) {
+    return;
+  }
+
+  const farPointPower =
+    getFarPointPower();
+
+  const nearPointPower =
+    100 / distanceValue;
+
+  const accommodation =
+    nearPointPower -
+    farPointPower;
+
+  accommodationInput.value =
+    accommodation.toFixed(2);
+}
 
 
-    function formatDistance(distance) {
-        if (!isFinite(distance) || distance <= 0) {
-            return "無限遠方";
-        }
+/* 入力後の整形 */
+fullInput.addEventListener(
+  "blur",
+  function() {
 
-        const rounded = Math.round(distance);
+    normalizeDegreeInput(
+      fullInput
+    );
 
-        return `${rounded}cm`;
+    updateSelectedAutoValue();
+  }
+);
+
+
+wearInput.addEventListener(
+  "blur",
+  function() {
+
+    normalizeDegreeInput(
+      wearInput
+    );
+
+    updateSelectedAutoValue();
+  }
+);
+
+
+accommodationInput.addEventListener(
+  "blur",
+  function() {
+
+    if (
+      calculationMode !==
+      "accommodation"
+    ) {
+      return;
     }
 
+    updateDistanceFromAccommodation();
+  }
+);
 
-    function calculateDistanceFromPower(power) {
-        if (Math.abs(power) < 0.000001) {
-            return Infinity;
-        }
 
-        return 100 / Math.abs(power);
+blurInput.addEventListener(
+  "blur",
+  function() {
+
+    if (
+      calculationMode !==
+      "distance"
+    ) {
+      return;
     }
 
+    updateAccommodationFromDistance();
+  }
+);
 
-    function calculate() {
-        basicError.textContent = "";
 
-        const full =
-            getSignedValue(fullCorrection, fullMinus, fullPlus);
+addInput.addEventListener(
+  "blur",
+  function() {
 
-        const wearing =
-            getSignedValue(wearingValue, wearMinus, wearPlus);
+    normalizeDegreeInput(
+      addInput
+    );
+  }
+);
 
-        const add =
-            parseFloat(addition.value);
 
-        if (full === null || wearing === null) {
-            resetResults();
-            return;
-        }
+function updateSelectedAutoValue() {
 
-        const residual = full - wearing;
+  if (
+    fullInput.value.trim() === "" ||
+    wearInput.value.trim() === ""
+  ) {
+    return;
+  }
 
-        let accommodationValue;
+  if (
+    calculationMode ===
+    "accommodation"
+  ) {
 
-        if (calculationMode === "accommodation") {
-
-            accommodationValue = parseFloat(accommodation.value);
-
-            if (isNaN(accommodationValue)) {
-                resetResults();
-                return;
-            }
-
-            accommodationValue = Math.max(0, accommodationValue);
-
-            const nearPower =
-                residual + accommodationValue;
-
-            const farDistance =
-                calculateDistanceFromPower(residual);
-
-            const nearDistance =
-                calculateDistanceFromPower(nearPower);
-
-            blurDistance.value =
-                isFinite(farDistance)
-                    ? Math.round(farDistance)
-                    : "";
-
-            accommodationAuto.value =
-                accommodationValue.toFixed(2);
-
-            displayResults(
-                farDistance,
-                nearDistance,
-                accommodationValue,
-                add
-            );
-
-        } else {
-
-            const blur =
-                parseFloat(blurDistanceInput.value);
-
-            if (isNaN(blur) || blur <= 0) {
-                resetResults();
-                return;
-            }
-
-            const blurPower =
-                100 / blur;
-
-            /*
-             * 装用値でぼやけた距離から調節力を逆算
-             */
-            accommodationValue =
-                Math.abs(blurPower) + Math.abs(residual);
-
-            /*
-             * 基本的な計算関係を維持するため、
-             * ぼやけた距離から得られる屈折力を
-             * 遠点側の基準として使用する。
-             */
-            const farDistance =
-                calculateDistanceFromPower(residual);
-
-            const nearPower =
-                residual + accommodationValue;
-
-            const nearDistance =
-                calculateDistanceFromPower(nearPower);
-
-            accommodationAuto.value =
-                accommodationValue.toFixed(2);
-
-            displayResults(
-                farDistance,
-                nearDistance,
-                accommodationValue,
-                add
-            );
-        }
+    if (
+      accommodationInput
+        .value.trim() !== ""
+    ) {
+      updateDistanceFromAccommodation();
     }
 
+  }
 
-    function displayResults(
-        farDistance,
-        nearDistance,
-        accommodationValue,
-        add
+  else {
+
+    if (
+      blurInput.value.trim() !== ""
+    ) {
+      updateAccommodationFromDistance();
+    }
+  }
+}
+
+
+/* 距離計算 */
+function distance(power) {
+
+  if (power <= 0) {
+    return Infinity;
+  }
+
+  return 100 / power;
+}
+
+
+/* 距離表示 */
+function displayDistance(value) {
+
+  if (!Number.isFinite(value)) {
+
+    return (
+      '<span class="infinity">' +
+      '無限遠方' +
+      '</span>'
+    );
+  }
+
+  return (
+    Math.round(value) +
+    '<span class="unit-text">' +
+    'cm' +
+    '</span>'
+  );
+}
+
+
+/* 結果行 */
+function resultRow(
+  name,
+  far,
+  near
+) {
+
+  let text =
+    displayDistance(far);
+
+  if (near !== null) {
+
+    text +=
+      " 〜 " +
+      displayDistance(near);
+  }
+
+  return `
+    <div class="result-item">
+
+      <div class="result-item-name">
+        ${name}
+      </div>
+
+      <div class="result-range">
+        ${text}
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* 計算 */
+document
+  .getElementById("calculate")
+  .addEventListener(
+    "click",
+    calculate
+  );
+
+
+function calculate() {
+
+  normalizeDegreeInput(
+    fullInput
+  );
+
+  normalizeDegreeInput(
+    wearInput
+  );
+
+  normalizeDegreeInput(
+    addInput
+  );
+
+
+  if (
+    calculationMode ===
+    "accommodation"
+  ) {
+
+    normalizeDegreeInput(
+      accommodationInput
+    );
+
+    updateDistanceFromAccommodation();
+
+  }
+
+  else {
+
+    normalizeDistanceInput();
+
+    updateAccommodationFromDistance();
+  }
+
+
+  error("fullError", "");
+  error("wearError", "");
+  error("blurError", "");
+  error("accommodationError", "");
+  error("addError", "");
+
+
+  resultBox.style.display =
+    "none";
+
+
+  if (
+    fullInput.value.trim() === ""
+  ) {
+
+    error(
+      "fullError",
+      "完全矯正値を入力してください。"
+    );
+
+    return;
+  }
+
+
+  if (
+    wearInput.value.trim() === ""
+  ) {
+
+    error(
+      "wearError",
+      "装用値を入力してください。"
+    );
+
+    return;
+  }
+
+
+  const full =
+    Number(fullInput.value);
+
+  const wear =
+    Number(wearInput.value);
+
+
+  if (
+    !Number.isFinite(full) ||
+    !Number.isFinite(wear)
+  ) {
+
+    error(
+      "fullError",
+      "正しい度数を入力してください。"
+    );
+
+    return;
+  }
+
+
+  const fullPower =
+    fullSign === "-"
+      ? -full
+      : full;
+
+  const wearPower =
+    wearSign === "-"
+      ? -wear
+      : wear;
+
+
+  const farPointPower =
+    -fullPower +
+    wearPower;
+
+
+  let accommodation =
+    null;
+
+  let blurDistanceValue =
+    null;
+
+
+  if (
+    calculationMode ===
+    "distance"
+  ) {
+
+    if (
+      blurInput.value.trim() !== ""
     ) {
 
-        document.getElementById("farPoint").textContent =
-            formatDistance(farDistance);
+      blurDistanceValue =
+        Number(
+          blurInput.value
+        );
 
-        document.getElementById("nearPoint").textContent =
-            formatDistance(nearDistance);
+      if (
+        !Number.isFinite(
+          blurDistanceValue
+        ) ||
+        blurDistanceValue <= 0
+      ) {
 
-        /*
-         * 遠用
-         */
-        document.getElementById("distanceRange").textContent =
-            `${formatDistance(farDistance)} 〜 ${formatDistance(nearDistance)}`;
+        error(
+          "blurError",
+          "正しい距離を入力してください。"
+        );
 
-
-        /*
-         * 加入度数が入力されていない場合、
-         * 中用・近用は表示しない
-         */
-        if (isNaN(add) || add <= 0) {
-            middleRangeCard.classList.add("hidden");
-            nearRangeCard.classList.add("hidden");
-
-            rangeSection.classList.remove("hidden");
-            return;
-        }
-
-        middleRangeCard.classList.remove("hidden");
-        nearRangeCard.classList.remove("hidden");
+        return;
+      }
 
 
-        /*
-         * 中用部
-         *
-         * 遠用の屈折力に加入度数の半分を加える
-         */
-        const middlePower =
-            (parseFloat(
-                getSignedValue(
-                    fullCorrection,
-                    fullMinus,
-                    fullPlus
-                )
-            ) -
-            parseFloat(
-                getSignedValue(
-                    wearingValue,
-                    wearMinus,
-                    wearPlus
-                )
-            )) + add / 2;
+      const nearPointPower =
+        100 /
+        blurDistanceValue;
 
 
-        /*
-         * 近用部
-         *
-         * 遠用の屈折力に加入度数を加える
-         */
-        const nearPower =
-            (parseFloat(
-                getSignedValue(
-                    fullCorrection,
-                    fullMinus,
-                    fullPlus
-                )
-            ) -
-            parseFloat(
-                getSignedValue(
-                    wearingValue,
-                    wearMinus,
-                    wearPlus
-                )
-            )) + add;
+      accommodation =
+        nearPointPower -
+        farPointPower;
 
 
-        const middleDistance =
-            calculateDistanceFromPower(middlePower);
+      accommodationInput.value =
+        accommodation.toFixed(2);
+    }
+  }
 
-        const nearDistance =
-            calculateDistanceFromPower(nearPower);
+  else {
+
+    if (
+      accommodationInput
+        .value.trim() !== ""
+    ) {
+
+      accommodation =
+        Number(
+          accommodationInput.value
+        );
+
+      if (
+        !Number.isFinite(
+          accommodation
+        )
+      ) {
+
+        error(
+          "accommodationError",
+          "正しい調節力を入力してください。"
+        );
+
+        return;
+      }
 
 
-        document.getElementById("middleRange").textContent =
-            `${formatDistance(middleDistance)} 〜 ${formatDistance(nearDistance)}`;
+      const nearPointPower =
+        farPointPower +
+        accommodation;
 
-        document.getElementById("nearRange").textContent =
-            `${formatDistance(nearDistance)} 〜 ${formatDistance(nearDistance)}`;
 
-        rangeSection.classList.remove("hidden");
+      if (nearPointPower <= 0) {
+
+        blurDistanceValue =
+          Infinity;
+
+        blurInput.value =
+          "無限遠方";
+      }
+
+      else {
+
+        blurDistanceValue =
+          100 /
+          nearPointPower;
+
+        blurInput.value =
+          Math.round(
+            blurDistanceValue
+          );
+      }
+    }
+  }
+
+
+  const farDistance =
+    distance(
+      farPointPower
+    );
+
+
+  let nearDistance =
+    null;
+
+
+  if (
+    accommodation !== null
+  ) {
+
+    nearDistance =
+      distance(
+        farPointPower +
+        accommodation
+      );
+  }
+
+
+  let addition =
+    null;
+
+
+  if (
+    addInput.value.trim() !== ""
+  ) {
+
+    addition =
+      Number(
+        addInput.value
+      );
+
+    if (
+      !Number.isFinite(
+        addition
+      )
+    ) {
+
+      error(
+        "addError",
+        "正しい加入度数を入力してください。"
+      );
+
+      return;
+    }
+  }
+
+
+  let html = `
+    <div class="result-title">
+      計算結果
+    </div>
+  `;
+
+
+  if (
+    accommodation !== null ||
+    blurDistanceValue !== null
+  ) {
+
+    html += `
+      <div class="adjustment-result">
+
+        <div class="adjustment-title">
+          調節
+        </div>
+
+        <div class="adjustment-values">
+
+          <div class="adjustment-value">
+            <span>調節力</span>
+            <strong>
+              ${
+                accommodation !== null
+                  ? accommodation.toFixed(2) + "D"
+                  : "—"
+              }
+            </strong>
+          </div>
+
+          <div class="adjustment-value">
+            <span>
+              装用値でぼやけた距離
+            </span>
+            <strong>
+              ${
+                blurDistanceValue === Infinity
+                  ? "無限遠方"
+                  : blurDistanceValue !== null
+                    ? Math.round(
+                        blurDistanceValue
+                      ) + "cm"
+                    : "—"
+              }
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  html += `
+    <div class="result-note">
+      明視域：遠い距離 → 近い距離
+    </div>
+
+    <div class="result-grid">
+  `;
+
+
+  html +=
+    resultRow(
+      "遠用",
+      farDistance,
+      nearDistance
+    );
+
+
+  if (
+    addition !== null
+  ) {
+
+    /*
+      中用部
+      加入度数の1/4
+    */
+    const intermediatePower =
+      farPointPower +
+      addition / 4;
+
+
+    const intermediateFar =
+      distance(
+        intermediatePower
+      );
+
+
+    let intermediateNear =
+      null;
+
+
+    if (
+      accommodation !== null
+    ) {
+
+      intermediateNear =
+        distance(
+          intermediatePower +
+          accommodation
+        );
     }
 
 
-    function resetResults() {
-
-        document.getElementById("farPoint").textContent = "—";
-        document.getElementById("nearPoint").textContent = "—";
-        document.getElementById("distanceRange").textContent = "—";
-        document.getElementById("middleRange").textContent = "—";
-        document.getElementById("nearRange").textContent = "—";
-
-        accommodationAuto.value = "";
-
-        rangeSection.classList.add("hidden");
-
-        middleRangeCard.classList.remove("hidden");
-        nearRangeCard.classList.remove("hidden");
-    }
+    html +=
+      resultRow(
+        "中用",
+        intermediateFar,
+        intermediateNear
+      );
 
 
     /*
-     * 初期表示
-     */
-    setSign(fullMinus, fullPlus, "minus");
-    setSign(wearMinus, wearPlus, "minus");
+      近用
+    */
+    const nearPower =
+      farPointPower +
+      addition;
 
-</script>
 
-   <script>
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js")
-            .then(() => {
-                console.log("Service Worker registered.");
-            })
-            .catch(error => {
-                console.error("Service Worker registration failed:", error);
-            });
-    });
+    const nearFar =
+      distance(
+        nearPower
+      );
+
+
+    let nearNear =
+      null;
+
+
+    if (
+      accommodation !== null
+    ) {
+
+      nearNear =
+        distance(
+          nearPower +
+          accommodation
+        );
+    }
+
+
+    html +=
+      resultRow(
+        "近用",
+        nearFar,
+        nearNear
+      );
+  }
+
+
+  html += `
+    </div>
+  `;
+
+
+  resultBox.innerHTML =
+    html;
+
+  resultBox.style.display =
+    "block";
 }
+
+
+/* リセット */
+document
+  .getElementById("reset")
+  .addEventListener(
+    "click",
+    function() {
+
+      fullInput.value = "";
+      wearInput.value = "";
+      accommodationInput.value = "";
+      blurInput.value = "";
+      addInput.value = "";
+
+      fullSign = "-";
+      wearSign = "-";
+
+      document
+        .getElementById("fullMinus")
+        .classList.add("selected");
+
+      document
+        .getElementById("fullPlus")
+        .classList.remove("selected");
+
+      document
+        .getElementById("wearMinus")
+        .classList.add("selected");
+
+      document
+        .getElementById("wearPlus")
+        .classList.remove("selected");
+
+      error("fullError", "");
+      error("wearError", "");
+      error("blurError", "");
+      error(
+        "accommodationError",
+        ""
+      );
+      error("addError", "");
+
+      resultBox.innerHTML = "";
+      resultBox.style.display =
+        "none";
+
+      setCalculationMode(
+        "accommodation"
+      );
+    }
+  );
+
+
+/* 初期状態 */
+setCalculationMode(
+  "accommodation"
+);
+
 </script>
-   
+
 </body>
 </html>
