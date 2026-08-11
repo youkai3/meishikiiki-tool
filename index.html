@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="./manifest.json">
+
+<meta name="theme-color" content="#2563eb">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="明視域計算">
+
 <title>明視域計算ツール</title>
 
 <style>
@@ -367,8 +376,6 @@ input:disabled {
       基本
     </div>
 
-
-    <!-- 完全矯正値 -->
     <div class="field">
 
       <div class="field-label">
@@ -418,7 +425,6 @@ input:disabled {
     </div>
 
 
-    <!-- 装用値 -->
     <div class="field">
 
       <div class="field-label">
@@ -502,7 +508,6 @@ input:disabled {
     </div>
 
 
-    <!-- 調節力 -->
     <div
       class="field"
       id="accommodationField"
@@ -547,7 +552,6 @@ input:disabled {
     </div>
 
 
-    <!-- 装用値でぼやけた距離 -->
     <div
       class="field disabled-field"
       id="blurField"
@@ -635,6 +639,7 @@ input:disabled {
 
     </div>
 
+
     <div class="button-row">
 
       <button
@@ -658,7 +663,6 @@ input:disabled {
   </div>
 
 
-  <!-- 計算結果 -->
   <div
     id="result"
     class="card result-card"
@@ -669,20 +673,32 @@ input:disabled {
 
 <script>
 
-const fullInput = document.getElementById("full");
-const wearInput = document.getElementById("wear");
-const accommodationInput = document.getElementById("accommodation");
-const blurInput = document.getElementById("blur");
-const addInput = document.getElementById("add");
-const resultBox = document.getElementById("result");
+const fullInput =
+  document.getElementById("full");
+
+const wearInput =
+  document.getElementById("wear");
+
+const accommodationInput =
+  document.getElementById("accommodation");
+
+const blurInput =
+  document.getElementById("blur");
+
+const addInput =
+  document.getElementById("add");
+
+const resultBox =
+  document.getElementById("result");
+
 
 let fullSign = "-";
 let wearSign = "-";
 let calculationMode = "accommodation";
 
 
-/* 全角 → 半角 */
 function toHalfWidth(value) {
+
   return value
     .replace(/[０-９．]/g, function(s) {
       return String.fromCharCode(
@@ -694,11 +710,12 @@ function toHalfWidth(value) {
 }
 
 
-/* 度数整形 */
 function normalizeDegreeInput(input) {
 
   let value =
-    toHalfWidth(input.value.trim());
+    toHalfWidth(
+      input.value.trim()
+    );
 
   value =
     value.replace(/[^0-9.]/g, "");
@@ -707,6 +724,7 @@ function normalizeDegreeInput(input) {
     value.split(".");
 
   if (parts.length > 2) {
+
     value =
       parts[0] +
       "." +
@@ -714,7 +732,9 @@ function normalizeDegreeInput(input) {
   }
 
   if (value === "") {
+
     input.value = "";
+
     return;
   }
 
@@ -730,6 +750,7 @@ function normalizeDegreeInput(input) {
     Number.isInteger(number) &&
     number >= 25
   ) {
+
     input.value =
       (number / 100).toFixed(2);
 
@@ -741,7 +762,6 @@ function normalizeDegreeInput(input) {
 }
 
 
-/* 距離整形 */
 function normalizeDistanceInput() {
 
   let value =
@@ -757,7 +777,6 @@ function normalizeDistanceInput() {
 }
 
 
-/* 符号ボタン */
 function setupSignButtons(
   minusId,
   plusId,
@@ -802,6 +821,7 @@ setupSignButtons(
   }
 );
 
+
 setupSignButtons(
   "wearMinus",
   "wearPlus",
@@ -811,7 +831,6 @@ setupSignButtons(
 );
 
 
-/* 入力モード */
 const accommodationMode =
   document.getElementById("accommodationMode");
 
@@ -905,6 +924,7 @@ accommodationMode.addEventListener(
     if (
       accommodationInput.value.trim() !== ""
     ) {
+
       updateDistanceFromAccommodation();
     }
   }
@@ -922,22 +942,22 @@ distanceMode.addEventListener(
     if (
       blurInput.value.trim() !== ""
     ) {
+
       updateAccommodationFromDistance();
     }
   }
 );
 
 
-/* エラー */
 function error(id, message) {
 
   document
     .getElementById(id)
-    .textContent = message;
+    .textContent =
+      message;
 }
 
 
-/* 遠点屈折力 */
 function getFarPointPower() {
 
   const full =
@@ -960,7 +980,6 @@ function getFarPointPower() {
 }
 
 
-/* 調節力 → 装用値でぼやけた距離 */
 function updateDistanceFromAccommodation() {
 
   normalizeDegreeInput(
@@ -970,7 +989,9 @@ function updateDistanceFromAccommodation() {
   if (
     accommodationInput.value.trim() === ""
   ) {
+
     blurInput.value = "";
+
     return;
   }
 
@@ -978,15 +999,21 @@ function updateDistanceFromAccommodation() {
     fullInput.value.trim() === "" ||
     wearInput.value.trim() === ""
   ) {
+
     return;
   }
 
   const accommodation =
-    Number(accommodationInput.value);
+    Number(
+      accommodationInput.value
+    );
 
   if (
-    !Number.isFinite(accommodation)
+    !Number.isFinite(
+      accommodation
+    )
   ) {
+
     return;
   }
 
@@ -1013,7 +1040,6 @@ function updateDistanceFromAccommodation() {
 }
 
 
-/* 装用値でぼやけた距離 → 調節力 */
 function updateAccommodationFromDistance() {
 
   normalizeDistanceInput();
@@ -1021,7 +1047,9 @@ function updateAccommodationFromDistance() {
   if (
     blurInput.value.trim() === ""
   ) {
+
     accommodationInput.value = "";
+
     return;
   }
 
@@ -1029,6 +1057,7 @@ function updateAccommodationFromDistance() {
     fullInput.value.trim() === "" ||
     wearInput.value.trim() === ""
   ) {
+
     return;
   }
 
@@ -1036,9 +1065,12 @@ function updateAccommodationFromDistance() {
     Number(blurInput.value);
 
   if (
-    !Number.isFinite(distanceValue) ||
+    !Number.isFinite(
+      distanceValue
+    ) ||
     distanceValue <= 0
   ) {
+
     return;
   }
 
@@ -1057,7 +1089,6 @@ function updateAccommodationFromDistance() {
 }
 
 
-/* 入力後の整形 */
 fullInput.addEventListener(
   "blur",
   function() {
@@ -1092,6 +1123,7 @@ accommodationInput.addEventListener(
       calculationMode !==
       "accommodation"
     ) {
+
       return;
     }
 
@@ -1108,6 +1140,7 @@ blurInput.addEventListener(
       calculationMode !==
       "distance"
     ) {
+
       return;
     }
 
@@ -1133,6 +1166,7 @@ function updateSelectedAutoValue() {
     fullInput.value.trim() === "" ||
     wearInput.value.trim() === ""
   ) {
+
     return;
   }
 
@@ -1144,6 +1178,7 @@ function updateSelectedAutoValue() {
     if (
       accommodationInput.value.trim() !== ""
     ) {
+
       updateDistanceFromAccommodation();
     }
 
@@ -1152,16 +1187,17 @@ function updateSelectedAutoValue() {
     if (
       blurInput.value.trim() !== ""
     ) {
+
       updateAccommodationFromDistance();
     }
   }
 }
 
 
-/* 距離計算 */
 function distance(power) {
 
   if (power <= 0) {
+
     return Infinity;
   }
 
@@ -1169,7 +1205,6 @@ function distance(power) {
 }
 
 
-/* 距離表示 */
 function displayDistance(value) {
 
   if (!Number.isFinite(value)) {
@@ -1190,7 +1225,6 @@ function displayDistance(value) {
 }
 
 
-/* 結果行 */
 function resultRow(
   name,
   far,
@@ -1223,7 +1257,6 @@ function resultRow(
 }
 
 
-/* 計算 */
 document
   .getElementById("calculate")
   .addEventListener(
@@ -1346,7 +1379,9 @@ function calculate() {
     ) {
 
       blurDistanceValue =
-        Number(blurInput.value);
+        Number(
+          blurInput.value
+        );
 
       if (
         !Number.isFinite(
@@ -1403,7 +1438,9 @@ function calculate() {
         farPointPower +
         accommodation;
 
-      if (nearPointPower <= 0) {
+      if (
+        nearPointPower <= 0
+      ) {
 
         blurDistanceValue =
           Infinity;
@@ -1426,10 +1463,14 @@ function calculate() {
 
 
   const farDistance =
-    distance(farPointPower);
+    distance(
+      farPointPower
+    );
+
 
   let nearDistance =
     null;
+
 
   if (
     accommodation !== null
@@ -1446,12 +1487,15 @@ function calculate() {
   let addition =
     null;
 
+
   if (
     addInput.value.trim() !== ""
   ) {
 
     addition =
-      Number(addInput.value);
+      Number(
+        addInput.value
+      );
 
     if (
       !Number.isFinite(addition)
@@ -1489,7 +1533,9 @@ function calculate() {
         <div class="adjustment-values">
 
           <div class="adjustment-value">
-            <span>調節力</span>
+            <span>
+              調節力
+            </span>
 
             <strong>
               ${
@@ -1499,6 +1545,7 @@ function calculate() {
               }
             </strong>
           </div>
+
 
           <div class="adjustment-value">
 
@@ -1552,13 +1599,16 @@ function calculate() {
       farPointPower +
       addition / 4;
 
+
     const intermediateFar =
       distance(
         intermediatePower
       );
 
+
     let intermediateNear =
       null;
+
 
     if (
       accommodation !== null
@@ -1570,6 +1620,7 @@ function calculate() {
           accommodation
         );
     }
+
 
     html +=
       resultRow(
@@ -1583,13 +1634,16 @@ function calculate() {
       farPointPower +
       addition;
 
+
     const nearFar =
       distance(
         nearPower
       );
 
+
     let nearNear =
       null;
+
 
     if (
       accommodation !== null
@@ -1601,6 +1655,7 @@ function calculate() {
           accommodation
         );
     }
+
 
     html +=
       resultRow(
@@ -1615,6 +1670,7 @@ function calculate() {
     </div>
   `;
 
+
   resultBox.innerHTML =
     html;
 
@@ -1623,7 +1679,6 @@ function calculate() {
 }
 
 
-/* リセット */
 document
   .getElementById("reset")
   .addEventListener(
@@ -1666,6 +1721,7 @@ document
       error("addError", "");
 
       resultBox.innerHTML = "";
+
       resultBox.style.display =
         "none";
 
@@ -1676,7 +1732,6 @@ document
   );
 
 
-/* 初期状態 */
 setCalculationMode(
   "accommodation"
 );
@@ -1684,7 +1739,6 @@ setCalculationMode(
 </script>
 
 
-<!-- Service Worker 登録 -->
 <script>
 if ("serviceWorker" in navigator) {
 
@@ -1694,10 +1748,11 @@ if ("serviceWorker" in navigator) {
 
       navigator.serviceWorker
         .register("./sw.js")
-        .then(function() {
+        .then(function(registration) {
 
           console.log(
-            "Service Worker registered."
+            "Service Worker registered.",
+            registration.scope
           );
 
         })
