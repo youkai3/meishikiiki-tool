@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,6 +20,10 @@
   --border: #d1d5db;
   --main: #111827;
   --error: #dc2626;
+  --input-bg: #ffffff;
+  --auto-bg: #f3f4f6;
+  --input-label: #111827;
+  --auto-label: #6b7280;
 }
 
 body {
@@ -136,7 +141,7 @@ body {
   padding: 0 14px;
   border: 1px solid var(--border);
   border-radius: 11px;
-  background: #fff;
+  background: var(--input-bg);
   color: var(--text);
   font-size: 19px;
   text-align: right;
@@ -146,6 +151,18 @@ body {
 .input-row input:focus {
   border-color: #6b7280;
   box-shadow: 0 0 0 2px rgba(107,114,128,0.12);
+}
+
+.input-row input.auto-input {
+  background: var(--auto-bg);
+  color: var(--auto-label);
+  border-color: #e5e7eb;
+  cursor: default;
+}
+
+.input-row input.auto-input:focus {
+  border-color: #e5e7eb;
+  box-shadow: none;
 }
 
 .unit {
@@ -175,6 +192,98 @@ body {
   font-size: 13px;
   line-height: 1.4;
 }
+
+
+/* =====================================
+   計算方法選択
+===================================== */
+
+.calculation-choice {
+  margin-bottom: 24px;
+}
+
+.choice-title {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.choice-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.choice-button {
+  min-height: 58px;
+  padding: 9px 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.choice-button.selected {
+  background: var(--main);
+  border-color: var(--main);
+  color: #fff;
+}
+
+.choice-button:active {
+  transform: scale(0.98);
+}
+
+
+/* =====================================
+   入力・自動計算バッジ
+===================================== */
+
+.field-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.field-status.input-status {
+  background: #111827;
+  color: #fff;
+}
+
+.field-status.auto-status {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.field-label-main {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.auto-note {
+  color: var(--sub);
+  font-size: 12px;
+}
+
+.input-row input[readonly] {
+  user-select: none;
+}
+
+
+/* =====================================
+   ボタン
+===================================== */
 
 .button-row {
   display: flex;
@@ -207,6 +316,11 @@ body {
   background: #fff;
   color: #374151;
 }
+
+
+/* =====================================
+   結果
+===================================== */
 
 .result-card {
   display: none;
@@ -287,6 +401,11 @@ body {
   font-size: 22px;
 }
 
+
+/* =====================================
+   スマートフォン
+===================================== */
+
 @media (max-width: 380px) {
 
   .app {
@@ -313,9 +432,14 @@ body {
   .result-range {
     font-size: 22px;
   }
+
+  .choice-button {
+    font-size: 13px;
+  }
 }
 </style>
 </head>
+
 
 <body>
 
@@ -432,13 +556,58 @@ body {
     </div>
 
 
+    <!-- 計算方法 -->
+
+    <div class="calculation-choice">
+
+      <div class="choice-title">
+        どちらから計算しますか？
+      </div>
+
+      <div class="choice-buttons">
+
+        <button
+          type="button"
+          class="choice-button selected"
+          id="distanceMode"
+        >
+          装用値でぼやけた距離<br>
+          から計算
+        </button>
+
+        <button
+          type="button"
+          class="choice-button"
+          id="accommodationMode"
+        >
+          調節力<br>
+          から計算
+        </button>
+
+      </div>
+
+    </div>
+
+
     <!-- 装用値でぼやけた距離 -->
 
     <div class="field">
 
       <div class="field-label">
-        <strong>装用値でぼやけた距離</strong>
-        <span class="optional">任意</span>
+
+        <div class="field-label-main">
+          <strong>装用値でぼやけた距離</strong>
+
+          <span
+            class="field-status input-status"
+            id="blurStatus"
+          >
+            入力
+          </span>
+        </div>
+
+        <span class="optional">cm</span>
+
       </div>
 
       <div class="input-row">
@@ -455,8 +624,11 @@ body {
 
       </div>
 
-      <div class="helper">
-        入力すると調節力を自動計算します。
+      <div
+        class="helper"
+        id="blurHelper"
+      >
+        ぼやけ始めた距離を入力すると、調節力を自動計算します。
       </div>
 
       <div id="blurError" class="error"></div>
@@ -469,8 +641,20 @@ body {
     <div class="field">
 
       <div class="field-label">
-        <strong>調節力</strong>
-        <span class="optional">任意</span>
+
+        <div class="field-label-main">
+          <strong>調節力</strong>
+
+          <span
+            class="field-status auto-status"
+            id="accommodationStatus"
+          >
+            自動計算
+          </span>
+        </div>
+
+        <span class="optional">D</span>
+
       </div>
 
       <div class="input-row">
@@ -480,15 +664,20 @@ body {
           type="text"
           inputmode="decimal"
           autocomplete="off"
-          placeholder="例：200"
+          placeholder="例：2.00"
+          readonly
+          class="auto-input"
         >
 
         <span class="unit">D</span>
 
       </div>
 
-      <div class="helper">
-        入力すると装用値でぼやけた距離を自動計算します。
+      <div
+        class="helper"
+        id="accommodationHelper"
+      >
+        装用値でぼやけた距離から自動計算します。
       </div>
 
       <div id="accommodationError" class="error"></div>
@@ -585,6 +774,25 @@ const addInput =
 const resultBox =
   document.getElementById("result");
 
+
+/* =====================================
+   計算方法
+===================================== */
+
+/*
+  distance:
+    装用値でぼやけた距離 → 調節力
+
+  accommodation:
+    調節力 → 装用値でぼやけた距離
+*/
+
+let calculationMode = "distance";
+
+
+/* =====================================
+   符号
+===================================== */
 
 let fullSign = "-";
 let wearSign = "-";
@@ -753,6 +961,156 @@ function normalizeAccommodationInput() {
 
 
 /* =====================================
+   計算方法UI
+===================================== */
+
+const distanceModeButton =
+  document.getElementById("distanceMode");
+
+const accommodationModeButton =
+  document.getElementById("accommodationMode");
+
+const blurStatus =
+  document.getElementById("blurStatus");
+
+const accommodationStatus =
+  document.getElementById("accommodationStatus");
+
+const blurHelper =
+  document.getElementById("blurHelper");
+
+const accommodationHelper =
+  document.getElementById("accommodationHelper");
+
+
+function updateCalculationModeUI() {
+
+  if (calculationMode === "distance") {
+
+    distanceModeButton.classList.add("selected");
+    accommodationModeButton.classList.remove("selected");
+
+    blurStatus.textContent =
+      "入力";
+
+    blurStatus.className =
+      "field-status input-status";
+
+    accommodationStatus.textContent =
+      "自動計算";
+
+    accommodationStatus.className =
+      "field-status auto-status";
+
+    blurInput.readOnly = false;
+    blurInput.classList.remove("auto-input");
+
+    accommodationInput.readOnly = true;
+    accommodationInput.classList.add("auto-input");
+
+    blurHelper.textContent =
+      "ぼやけ始めた距離を入力すると、調節力を自動計算します。";
+
+    accommodationHelper.textContent =
+      "装用値でぼやけた距離から自動計算します。";
+
+  }
+  else {
+
+    distanceModeButton.classList.remove("selected");
+    accommodationModeButton.classList.add("selected");
+
+    blurStatus.textContent =
+      "自動計算";
+
+    blurStatus.className =
+      "field-status auto-status";
+
+    accommodationStatus.textContent =
+      "入力";
+
+    accommodationStatus.className =
+      "field-status input-status";
+
+    blurInput.readOnly = true;
+    blurInput.classList.add("auto-input");
+
+    accommodationInput.readOnly = false;
+    accommodationInput.classList.remove("auto-input");
+
+    blurHelper.textContent =
+      "調節力から装用値でぼやけた距離を自動計算します。";
+
+    accommodationHelper.textContent =
+      "調節力を入力すると、装用値でぼやけた距離を自動計算します。";
+
+  }
+
+}
+
+
+distanceModeButton.addEventListener(
+  "click",
+  function() {
+
+    calculationMode = "distance";
+
+    /*
+      モード変更時は、選択した入力側を基準に
+      もう一方を自動計算
+    */
+
+    if (
+      blurInput.value.trim() !== "" &&
+      blurInput.value !== "無限遠方"
+    ) {
+
+      updateAccommodationFromDistance();
+
+    }
+    else {
+
+      accommodationInput.value = "";
+
+    }
+
+    updateCalculationModeUI();
+
+  }
+);
+
+
+accommodationModeButton.addEventListener(
+  "click",
+  function() {
+
+    calculationMode = "accommodation";
+
+    /*
+      モード変更時は、選択した入力側を基準に
+      もう一方を自動計算
+    */
+
+    if (
+      accommodationInput.value.trim() !== ""
+    ) {
+
+      updateDistanceFromAccommodation();
+
+    }
+    else {
+
+      blurInput.value = "";
+
+    }
+
+    updateCalculationModeUI();
+
+  }
+);
+
+
+/* =====================================
    符号ボタン
 ===================================== */
 
@@ -871,14 +1229,20 @@ function updateAccommodationFromDistance() {
   if (
     blurInput.value.trim() === ""
   ) {
+
+    accommodationInput.value = "";
+
     return;
+
   }
 
   if (
     fullInput.value.trim() === "" ||
     wearInput.value.trim() === ""
   ) {
+
     return;
+
   }
 
   const distanceValue =
@@ -888,7 +1252,11 @@ function updateAccommodationFromDistance() {
     !Number.isFinite(distanceValue) ||
     distanceValue <= 0
   ) {
+
+    accommodationInput.value = "";
+
     return;
+
   }
 
   const farPointPower =
@@ -917,14 +1285,20 @@ function updateDistanceFromAccommodation() {
   if (
     accommodationInput.value.trim() === ""
   ) {
+
+    blurInput.value = "";
+
     return;
+
   }
 
   if (
     fullInput.value.trim() === "" ||
     wearInput.value.trim() === ""
   ) {
+
     return;
+
   }
 
   const accommodation =
@@ -933,7 +1307,11 @@ function updateDistanceFromAccommodation() {
   if (
     !Number.isFinite(accommodation)
   ) {
+
+    blurInput.value = "";
+
     return;
+
   }
 
   const farPointPower =
@@ -966,12 +1344,16 @@ function updateDistanceFromAccommodation() {
 
 
 /* =====================================
-   フォーカスを離れた時に自動計算
+   入力変更時の自動計算
 ===================================== */
 
 blurInput.addEventListener(
   "blur",
   function() {
+
+    if (calculationMode !== "distance") {
+      return;
+    }
 
     updateAccommodationFromDistance();
 
@@ -982,6 +1364,10 @@ blurInput.addEventListener(
 accommodationInput.addEventListener(
   "blur",
   function() {
+
+    if (calculationMode !== "accommodation") {
+      return;
+    }
 
     updateDistanceFromAccommodation();
 
@@ -1005,23 +1391,31 @@ accommodationInput.addEventListener(
       normalizeDegreeInput(this);
 
       /*
-        すでに距離が入力されている場合は
-        距離を基準に調節力を再計算
+        選択されている計算方法を基準に
+        自動計算側を更新
       */
 
-      if (
-        blurInput.value.trim() !== "" &&
-        blurInput.value !== "無限遠方"
-      ) {
+      if (calculationMode === "distance") {
 
-        updateAccommodationFromDistance();
+        if (
+          blurInput.value.trim() !== "" &&
+          blurInput.value !== "無限遠方"
+        ) {
+
+          updateAccommodationFromDistance();
+
+        }
 
       }
-      else if (
-        accommodationInput.value.trim() !== ""
-      ) {
+      else {
 
-        updateDistanceFromAccommodation();
+        if (
+          accommodationInput.value.trim() !== ""
+        ) {
+
+          updateDistanceFromAccommodation();
+
+        }
 
       }
 
@@ -1032,23 +1426,17 @@ accommodationInput.addEventListener(
 
 
 /* =====================================
-   加入度数など
+   加入度数
 ===================================== */
 
-[
-  addInput
-].forEach(function(input) {
+addInput.addEventListener(
+  "blur",
+  function() {
 
-  input.addEventListener(
-    "blur",
-    function() {
+    normalizeDegreeInput(this);
 
-      normalizeDegreeInput(this);
-
-    }
-  );
-
-});
+  }
+);
 
 
 /* =====================================
@@ -1145,12 +1533,21 @@ function calculate() {
   normalizeDegreeInput(wearInput);
 
   if (
-    blurInput.value !== "無限遠方"
+    blurInput.value !== "無限遠方" &&
+    calculationMode === "distance"
   ) {
+
     normalizeDistanceInput();
+
   }
 
-  normalizeAccommodationInput();
+  if (
+    calculationMode === "accommodation"
+  ) {
+
+    normalizeAccommodationInput();
+
+  }
 
   normalizeDegreeInput(addInput);
 
@@ -1252,13 +1649,39 @@ function calculate() {
 
 
   /*
-    ぼやけた距離が入力されている場合
+    装用値でぼやけた距離から計算
   */
 
   if (
-    blurInput.value.trim() !== "" &&
-    blurInput.value !== "無限遠方"
+    calculationMode === "distance"
   ) {
+
+    if (
+      blurInput.value.trim() === ""
+    ) {
+
+      error(
+        "blurError",
+        "装用値でぼやけた距離を入力してください。"
+      );
+
+      return;
+
+    }
+
+    if (
+      blurInput.value === "無限遠方"
+    ) {
+
+      error(
+        "blurError",
+        "正しい距離を入力してください。"
+      );
+
+      return;
+
+    }
+
 
     blurDistanceValue =
       Number(blurInput.value);
@@ -1291,14 +1714,26 @@ function calculate() {
 
   }
 
+
   /*
-    ぼやけた距離がなく、
-    調節力が入力されている場合
+    調節力から計算
   */
 
-  else if (
-    accommodationInput.value.trim() !== ""
-  ) {
+  else {
+
+    if (
+      accommodationInput.value.trim() === ""
+    ) {
+
+      error(
+        "accommodationError",
+        "調節力を入力してください。"
+      );
+
+      return;
+
+    }
+
 
     accommodation =
       Number(
@@ -1441,9 +1876,11 @@ function calculate() {
           <div class="adjustment-value">
             <span>調節力</span>
             <strong>
-              ${accommodation !== null
-                ? accommodation.toFixed(2) + "D"
-                : "—"}
+              ${
+                accommodation !== null
+                  ? accommodation.toFixed(2) + "D"
+                  : "—"
+              }
             </strong>
           </div>
 
@@ -1630,6 +2067,8 @@ function reset() {
 
   wearSign = "-";
 
+  calculationMode = "distance";
+
 
   document
     .getElementById("fullMinus")
@@ -1665,6 +2104,9 @@ function reset() {
   resultBox.style.display = "none";
 
 
+  updateCalculationModeUI();
+
+
   window.scrollTo({
     top: 0,
     behavior: "smooth"
@@ -1672,7 +2114,15 @@ function reset() {
 
 }
 
+
+/* =====================================
+   初期UI
+===================================== */
+
+updateCalculationModeUI();
+
 </script>
 
 </body>
 </html>
+```
