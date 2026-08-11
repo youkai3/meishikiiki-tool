@@ -1,0 +1,10 @@
+{
+  "name": "明視域計算ツール",
+  "short_name": "明視域計算",
+  "description": "明視域を計算するためのツール",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#2563eb",
+  "orientation": "portrait"
+}
