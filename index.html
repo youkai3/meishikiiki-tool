@@ -376,6 +376,8 @@ input:disabled {
       基本
     </div>
 
+
+    <!-- 完全矯正値 -->
     <div class="field">
 
       <div class="field-label">
@@ -425,6 +427,7 @@ input:disabled {
     </div>
 
 
+    <!-- 装用値 -->
     <div class="field">
 
       <div class="field-label">
@@ -508,6 +511,7 @@ input:disabled {
     </div>
 
 
+    <!-- 調節力 -->
     <div
       class="field"
       id="accommodationField"
@@ -552,6 +556,7 @@ input:disabled {
     </div>
 
 
+    <!-- 装用値でぼやけた距離 -->
     <div
       class="field disabled-field"
       id="blurField"
@@ -663,6 +668,7 @@ input:disabled {
   </div>
 
 
+  <!-- 計算結果 -->
   <div
     id="result"
     class="card result-card"
@@ -697,10 +703,12 @@ let wearSign = "-";
 let calculationMode = "accommodation";
 
 
+/* 全角 → 半角 */
 function toHalfWidth(value) {
 
   return value
     .replace(/[０-９．]/g, function(s) {
+
       return String.fromCharCode(
         s.charCodeAt(0) - 0xFEE0
       );
@@ -710,6 +718,7 @@ function toHalfWidth(value) {
 }
 
 
+/* 度数整形 */
 function normalizeDegreeInput(input) {
 
   let value =
@@ -742,6 +751,7 @@ function normalizeDegreeInput(input) {
     Number(value);
 
   if (!Number.isFinite(number)) {
+
     return;
   }
 
@@ -762,6 +772,7 @@ function normalizeDegreeInput(input) {
 }
 
 
+/* 距離整形 */
 function normalizeDistanceInput() {
 
   let value =
@@ -777,6 +788,7 @@ function normalizeDistanceInput() {
 }
 
 
+/* 符号ボタン */
 function setupSignButtons(
   minusId,
   plusId,
@@ -817,6 +829,7 @@ setupSignButtons(
   "fullMinus",
   "fullPlus",
   function(sign) {
+
     fullSign = sign;
   }
 );
@@ -826,11 +839,13 @@ setupSignButtons(
   "wearMinus",
   "wearPlus",
   function(sign) {
+
     wearSign = sign;
   }
 );
 
 
+/* 入力モード */
 const accommodationMode =
   document.getElementById("accommodationMode");
 
@@ -854,7 +869,9 @@ function setCalculationMode(mode) {
 
   calculationMode = mode;
 
-  if (mode === "accommodation") {
+  if (
+    mode === "accommodation"
+  ) {
 
     accommodationMode.classList.add("selected");
     distanceMode.classList.remove("selected");
@@ -882,7 +899,9 @@ function setCalculationMode(mode) {
     blurBadge.className =
       "badge badge-auto";
 
-  } else {
+  }
+
+  else {
 
     distanceMode.classList.add("selected");
     accommodationMode.classList.remove("selected");
@@ -949,6 +968,7 @@ distanceMode.addEventListener(
 );
 
 
+/* エラー */
 function error(id, message) {
 
   document
@@ -958,6 +978,7 @@ function error(id, message) {
 }
 
 
+/* 遠点屈折力 */
 function getFarPointPower() {
 
   const full =
@@ -980,6 +1001,7 @@ function getFarPointPower() {
 }
 
 
+/* 調節力 → 装用値でぼやけた距離 */
 function updateDistanceFromAccommodation() {
 
   normalizeDegreeInput(
@@ -1024,7 +1046,9 @@ function updateDistanceFromAccommodation() {
     farPointPower +
     accommodation;
 
-  if (nearPointPower <= 0) {
+  if (
+    nearPointPower <= 0
+  ) {
 
     blurInput.value =
       "無限遠方";
@@ -1040,6 +1064,7 @@ function updateDistanceFromAccommodation() {
 }
 
 
+/* 装用値でぼやけた距離 → 調節力 */
 function updateAccommodationFromDistance() {
 
   normalizeDistanceInput();
@@ -1089,6 +1114,7 @@ function updateAccommodationFromDistance() {
 }
 
 
+/* 入力後の整形 */
 fullInput.addEventListener(
   "blur",
   function() {
@@ -1182,7 +1208,9 @@ function updateSelectedAutoValue() {
       updateDistanceFromAccommodation();
     }
 
-  } else {
+  }
+
+  else {
 
     if (
       blurInput.value.trim() !== ""
@@ -1194,9 +1222,12 @@ function updateSelectedAutoValue() {
 }
 
 
+/* 距離計算 */
 function distance(power) {
 
-  if (power <= 0) {
+  if (
+    power <= 0
+  ) {
 
     return Infinity;
   }
@@ -1205,9 +1236,12 @@ function distance(power) {
 }
 
 
+/* 距離表示 */
 function displayDistance(value) {
 
-  if (!Number.isFinite(value)) {
+  if (
+    !Number.isFinite(value)
+  ) {
 
     return (
       '<span class="infinity">' +
@@ -1225,6 +1259,7 @@ function displayDistance(value) {
 }
 
 
+/* 結果行 */
 function resultRow(
   name,
   far,
@@ -1232,13 +1267,19 @@ function resultRow(
 ) {
 
   let text =
-    displayDistance(far);
+    displayDistance(
+      far
+    );
 
-  if (near !== null) {
+  if (
+    near !== null
+  ) {
 
     text +=
       " 〜 " +
-      displayDistance(near);
+      displayDistance(
+        near
+      );
   }
 
   return `
@@ -1257,6 +1298,7 @@ function resultRow(
 }
 
 
+/* 計算 */
 document
   .getElementById("calculate")
   .addEventListener(
@@ -1267,9 +1309,18 @@ document
 
 function calculate() {
 
-  normalizeDegreeInput(fullInput);
-  normalizeDegreeInput(wearInput);
-  normalizeDegreeInput(addInput);
+  normalizeDegreeInput(
+    fullInput
+  );
+
+  normalizeDegreeInput(
+    wearInput
+  );
+
+  normalizeDegreeInput(
+    addInput
+  );
+
 
   if (
     calculationMode ===
@@ -1282,7 +1333,9 @@ function calculate() {
 
     updateDistanceFromAccommodation();
 
-  } else {
+  }
+
+  else {
 
     normalizeDistanceInput();
 
@@ -1295,6 +1348,7 @@ function calculate() {
   error("blurError", "");
   error("accommodationError", "");
   error("addError", "");
+
 
   resultBox.style.display =
     "none";
@@ -1327,10 +1381,14 @@ function calculate() {
 
 
   const full =
-    Number(fullInput.value);
+    Number(
+      fullInput.value
+    );
 
   const wear =
-    Number(wearInput.value);
+    Number(
+      wearInput.value
+    );
 
 
   if (
@@ -1356,6 +1414,7 @@ function calculate() {
     wearSign === "-"
       ? -wear
       : wear;
+
 
   const farPointPower =
     -fullPower +
@@ -1383,6 +1442,7 @@ function calculate() {
           blurInput.value
         );
 
+
       if (
         !Number.isFinite(
           blurDistanceValue
@@ -1398,18 +1458,24 @@ function calculate() {
         return;
       }
 
+
       const nearPointPower =
-        100 / blurDistanceValue;
+        100 /
+        blurDistanceValue;
+
 
       accommodation =
         nearPointPower -
         farPointPower;
 
+
       accommodationInput.value =
         accommodation.toFixed(2);
     }
+  }
 
-  } else {
+
+  else {
 
     if (
       accommodationInput.value.trim() !== ""
@@ -1419,6 +1485,7 @@ function calculate() {
         Number(
           accommodationInput.value
         );
+
 
       if (
         !Number.isFinite(
@@ -1434,9 +1501,11 @@ function calculate() {
         return;
       }
 
+
       const nearPointPower =
         farPointPower +
         accommodation;
+
 
       if (
         nearPointPower <= 0
@@ -1448,10 +1517,13 @@ function calculate() {
         blurInput.value =
           "無限遠方";
 
-      } else {
+      }
+
+      else {
 
         blurDistanceValue =
-          100 / nearPointPower;
+          100 /
+          nearPointPower;
 
         blurInput.value =
           Math.round(
@@ -1497,8 +1569,11 @@ function calculate() {
         addInput.value
       );
 
+
     if (
-      !Number.isFinite(addition)
+      !Number.isFinite(
+        addition
+      )
     ) {
 
       error(
@@ -1533,6 +1608,7 @@ function calculate() {
         <div class="adjustment-values">
 
           <div class="adjustment-value">
+
             <span>
               調節力
             </span>
@@ -1544,6 +1620,7 @@ function calculate() {
                   : "—"
               }
             </strong>
+
           </div>
 
 
@@ -1583,9 +1660,10 @@ function calculate() {
   `;
 
 
+  /* 遠用部 */
   html +=
     resultRow(
-      "遠用",
+      "遠用部",
       farDistance,
       nearDistance
     );
@@ -1595,40 +1673,9 @@ function calculate() {
     addition !== null
   ) {
 
-    const intermediatePower =
-      farPointPower +
-      addition / 4;
-
-
-    const intermediateFar =
-      distance(
-        intermediatePower
-      );
-
-
-    let intermediateNear =
-      null;
-
-
-    if (
-      accommodation !== null
-    ) {
-
-      intermediateNear =
-        distance(
-          intermediatePower +
-          accommodation
-        );
-    }
-
-
-    html +=
-      resultRow(
-        "中用",
-        intermediateFar,
-        intermediateNear
-      );
-
+    /*
+      近用部
+    */
 
     const nearPower =
       farPointPower +
@@ -1659,9 +1706,49 @@ function calculate() {
 
     html +=
       resultRow(
-        "近用",
+        "近用部",
         nearFar,
         nearNear
+      );
+
+
+    /*
+      中近中用部
+      加入度数の1/4
+    */
+
+    const intermediatePower =
+      farPointPower +
+      addition / 4;
+
+
+    const intermediateFar =
+      distance(
+        intermediatePower
+      );
+
+
+    let intermediateNear =
+      null;
+
+
+    if (
+      accommodation !== null
+    ) {
+
+      intermediateNear =
+        distance(
+          intermediatePower +
+          accommodation
+        );
+    }
+
+
+    html +=
+      resultRow(
+        "中近中用部",
+        intermediateFar,
+        intermediateNear
       );
   }
 
@@ -1679,6 +1766,7 @@ function calculate() {
 }
 
 
+/* リセット */
 document
   .getElementById("reset")
   .addEventListener(
@@ -1732,6 +1820,7 @@ document
   );
 
 
+/* 初期状態 */
 setCalculationMode(
   "accommodation"
 );
@@ -1739,6 +1828,7 @@ setCalculationMode(
 </script>
 
 
+<!-- Service Worker 登録 -->
 <script>
 if ("serviceWorker" in navigator) {
 
